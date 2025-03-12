@@ -1,4 +1,4 @@
-# Octagon MCP
+# Octagon MCP Server
 
 A Model Context Protocol (MCP) server implementation that integrates with Octagon API for investment research capabilities.
 
