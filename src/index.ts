@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -13,6 +15,7 @@ const OCTAGON_API_BASE_URL = process.env.OCTAGON_API_BASE_URL || "https://api.oc
 
 if (!OCTAGON_API_KEY) {
   console.error("Error: OCTAGON_API_KEY is not set in the environment variables");
+  console.error("Please set the OCTAGON_API_KEY environment variable or use 'env OCTAGON_API_KEY=your_key npx -y octagon-mcp'");
   process.exit(1);
 }
 
@@ -48,19 +51,7 @@ async function processStreamingResponse(stream: any): Promise<string> {
       
       // For Responses API
       if (chunk.type === "response.output_text.delta") {
-        fullResponse += chunk.delta;
-      }
-      
-      if (chunk.type === "response.completed" && chunk.response?.citations) {
-        citations = chunk.response.citations;
-      }
-    }
-    
-    // Add citations to the response if available
-    if (citations.length > 0) {
-      fullResponse += "\n\nSOURCES:\n";
-      for (const citation of citations) {
-        fullResponse += `${citation.order}. ${citation.name}: ${citation.url}\n`;
+        fullResponse += chunk.text?.delta || "";
       }
     }
     
@@ -71,40 +62,48 @@ async function processStreamingResponse(stream: any): Promise<string> {
   }
 }
 
-// SEC Filings Analysis Tool
+// Define a schema for the 'prompt' parameter that all tools will use
+const promptSchema = z.object({
+  prompt: z.string().describe("Your natural language query or request for the agent"),
+});
+
+type PromptParams = {
+  prompt: string;
+};
+
+// Register a tool for each Octagon agent
+// SEC Filings Agent
 server.tool(
   "octagon-sec-agent",
-  "Extract information from SEC filings",
+  "Extract information from SEC filings like 10-K, 10-Q, 8-K, proxy statements, and other regulatory documents. Provide company name and specific questions about their filings.",
   {
-    prompt: z.string().describe("Your query about SEC filings (include company name, filing type, and time period in your prompt if relevant)"),
+    prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }) => {
+  async ({ prompt }: PromptParams) => {
     try {
-      // Call Octagon SEC agent
-      const stream = await octagonClient.chat.completions.create({
+      const response = await octagonClient.chat.completions.create({
         model: "octagon-sec-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
       });
       
-      const response = await processStreamingResponse(stream);
-      
+      const result = await processStreamingResponse(response);
       return {
         content: [
           {
             type: "text",
-            text: response,
+            text: result,
           },
         ],
       };
     } catch (error) {
-      console.error("Error querying SEC filings:", error);
+      console.error("Error calling SEC agent:", error);
       return {
         isError: true,
         content: [
           {
             type: "text",
-            text: `Error querying SEC filings: ${error instanceof Error ? error.message : String(error)}`,
+            text: `Error: Failed to process SEC filings query. ${error}`,
           },
         ],
       };
@@ -112,40 +111,38 @@ server.tool(
   }
 );
 
-// Earnings Call Analysis Tool
+// Earnings Call Transcripts Agent
 server.tool(
   "octagon-transcripts-agent",
-  "Analyze earnings call transcripts",
+  "Analyze earnings call transcripts for public companies. Ask specific questions about what was discussed in the latest or historical earnings calls.",
   {
-    prompt: z.string().describe("Your query about earnings call transcripts (include company name and quarter in your prompt if relevant)"),
+    prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }) => {
+  async ({ prompt }: PromptParams) => {
     try {
-      // Call Octagon Transcripts agent
-      const stream = await octagonClient.chat.completions.create({
+      const response = await octagonClient.chat.completions.create({
         model: "octagon-transcripts-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
       });
       
-      const response = await processStreamingResponse(stream);
-      
+      const result = await processStreamingResponse(response);
       return {
         content: [
           {
             type: "text",
-            text: response,
+            text: result,
           },
         ],
       };
     } catch (error) {
-      console.error("Error analyzing earnings call:", error);
+      console.error("Error calling Transcripts agent:", error);
       return {
         isError: true,
         content: [
           {
             type: "text",
-            text: `Error analyzing earnings call: ${error instanceof Error ? error.message : String(error)}`,
+            text: `Error: Failed to process earnings call transcript query. ${error}`,
           },
         ],
       };
@@ -153,40 +150,38 @@ server.tool(
   }
 );
 
-// Financial Data Tool
+// Financial Data Agent
 server.tool(
   "octagon-financials-agent",
-  "Retrieve financial metrics and ratios",
+  "Retrieve financial metrics, ratios, and data for public companies. Ask for specific financial information or comparisons across companies and time periods.",
   {
-    prompt: z.string().describe("Your query about financial data and metrics (include company name and time period in your prompt if relevant)"),
+    prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }) => {
+  async ({ prompt }: PromptParams) => {
     try {
-      // Call Octagon Financials agent
-      const stream = await octagonClient.chat.completions.create({
+      const response = await octagonClient.chat.completions.create({
         model: "octagon-financials-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
       });
       
-      const response = await processStreamingResponse(stream);
-      
+      const result = await processStreamingResponse(response);
       return {
         content: [
           {
             type: "text",
-            text: response,
+            text: result,
           },
         ],
       };
     } catch (error) {
-      console.error("Error retrieving financial data:", error);
+      console.error("Error calling Financials agent:", error);
       return {
         isError: true,
         content: [
           {
             type: "text",
-            text: `Error retrieving financial data: ${error instanceof Error ? error.message : String(error)}`,
+            text: `Error: Failed to process financial data query. ${error}`,
           },
         ],
       };
@@ -194,40 +189,38 @@ server.tool(
   }
 );
 
-// Market Data Tool
+// Stock Market Data Agent
 server.tool(
   "octagon-stock-data-agent",
-  "Access stock market data",
+  "Access stock market data, including prices, trading volumes, returns, and market trends. Ask questions about stock performance over specific time periods.",
   {
-    prompt: z.string().describe("Your query about stock market data (include company name and time period in your prompt if relevant)"),
+    prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }) => {
+  async ({ prompt }: PromptParams) => {
     try {
-      // Call Octagon Stock Data agent
-      const stream = await octagonClient.chat.completions.create({
+      const response = await octagonClient.chat.completions.create({
         model: "octagon-stock-data-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
       });
       
-      const response = await processStreamingResponse(stream);
-      
+      const result = await processStreamingResponse(response);
       return {
         content: [
           {
             type: "text",
-            text: response,
+            text: result,
           },
         ],
       };
     } catch (error) {
-      console.error("Error retrieving market data:", error);
+      console.error("Error calling Stock Data agent:", error);
       return {
         isError: true,
         content: [
           {
             type: "text",
-            text: `Error retrieving market data: ${error instanceof Error ? error.message : String(error)}`,
+            text: `Error: Failed to process stock market data query. ${error}`,
           },
         ],
       };
@@ -235,40 +228,38 @@ server.tool(
   }
 );
 
-// Private Company Research Tool
+// Private Companies Agent
 server.tool(
   "octagon-companies-agent",
-  "Research private company information",
+  "Research private company information, including funding, key people, products, and market positioning. Ask specific questions about private companies.",
   {
-    prompt: z.string().describe("Your query about a private company (make sure to include the company name in your prompt)"),
+    prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }) => {
+  async ({ prompt }: PromptParams) => {
     try {
-      // Call Octagon Companies agent
-      const stream = await octagonClient.chat.completions.create({
+      const response = await octagonClient.chat.completions.create({
         model: "octagon-companies-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
       });
       
-      const response = await processStreamingResponse(stream);
-      
+      const result = await processStreamingResponse(response);
       return {
         content: [
           {
             type: "text",
-            text: response,
+            text: result,
           },
         ],
       };
     } catch (error) {
-      console.error("Error researching private company:", error);
+      console.error("Error calling Companies agent:", error);
       return {
         isError: true,
         content: [
           {
             type: "text",
-            text: `Error researching private company: ${error instanceof Error ? error.message : String(error)}`,
+            text: `Error: Failed to process private company query. ${error}`,
           },
         ],
       };
@@ -276,122 +267,38 @@ server.tool(
   }
 );
 
-// Web Scraper Tool
-server.tool(
-  "octagon-scraper-agent",
-  "Extract data from any public website",
-  {
-    prompt: z.string().describe("Your query including the URL to scrape and what information to extract (format: 'Extract [information] from [URL]')"),
-  },
-  async ({ prompt }) => {
-    try {
-      // Call Octagon Scraper agent
-      const stream = await octagonClient.chat.completions.create({
-        model: "octagon-scraper-agent",
-        messages: [{ role: "user", content: prompt }],
-        stream: true,
-      });
-      
-      const response = await processStreamingResponse(stream);
-      
-      return {
-        content: [
-          {
-            type: "text",
-            text: response,
-          },
-        ],
-      };
-    } catch (error) {
-      console.error("Error scraping website:", error);
-      return {
-        isError: true,
-        content: [
-          {
-            type: "text",
-            text: `Error scraping website: ${error instanceof Error ? error.message : String(error)}`,
-          },
-        ],
-      };
-    }
-  }
-);
-
-// Deep Research Tool
-server.tool(
-  "octagon-deep-research-agent",
-  "Perform comprehensive research on any topic",
-  {
-    prompt: z.string().describe("Your research question or topic to investigate in detail"),
-  },
-  async ({ prompt }) => {
-    try {
-      // Call Octagon Deep Research agent
-      const stream = await octagonClient.chat.completions.create({
-        model: "octagon-deep-research-agent",
-        messages: [{ role: "user", content: prompt }],
-        stream: true,
-      });
-      
-      const response = await processStreamingResponse(stream);
-      
-      return {
-        content: [
-          {
-            type: "text",
-            text: response,
-          },
-        ],
-      };
-    } catch (error) {
-      console.error("Error performing deep research:", error);
-      return {
-        isError: true,
-        content: [
-          {
-            type: "text",
-            text: `Error performing deep research: ${error instanceof Error ? error.message : String(error)}`,
-          },
-        ],
-      };
-    }
-  }
-);
-
-// Funding Research Tool
+// Funding Agent
 server.tool(
   "octagon-funding-agent",
-  "Research startup funding rounds and venture capital",
+  "Research startup funding rounds and venture capital investments. Ask questions about fundraising, investments, and capital allocation in the private markets.",
   {
-    prompt: z.string().describe("Your query about startup funding information (include company name in your prompt if relevant)"),
+    prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }) => {
+  async ({ prompt }: PromptParams) => {
     try {
-      // Call Octagon Funding agent
-      const stream = await octagonClient.chat.completions.create({
+      const response = await octagonClient.chat.completions.create({
         model: "octagon-funding-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
       });
       
-      const response = await processStreamingResponse(stream);
-      
+      const result = await processStreamingResponse(response);
       return {
         content: [
           {
             type: "text",
-            text: response,
+            text: result,
           },
         ],
       };
     } catch (error) {
-      console.error("Error researching funding:", error);
+      console.error("Error calling Funding agent:", error);
       return {
         isError: true,
         content: [
           {
             type: "text",
-            text: `Error researching funding: ${error instanceof Error ? error.message : String(error)}`,
+            text: `Error: Failed to process funding data query. ${error}`,
           },
         ],
       };
@@ -399,40 +306,38 @@ server.tool(
   }
 );
 
-// M&A and IPO Research Tool
+// M&A and IPO Deals Agent
 server.tool(
   "octagon-deals-agent",
-  "Research M&A and IPO transactions",
+  "Research mergers, acquisitions, and IPO transactions. Ask questions about deal terms, valuations, and market implications of corporate transactions.",
   {
-    prompt: z.string().describe("Your query about M&A or IPO transactions (include company name in your prompt if relevant)"),
+    prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }) => {
+  async ({ prompt }: PromptParams) => {
     try {
-      // Call Octagon Deals agent
-      const stream = await octagonClient.chat.completions.create({
+      const response = await octagonClient.chat.completions.create({
         model: "octagon-deals-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
       });
       
-      const response = await processStreamingResponse(stream);
-      
+      const result = await processStreamingResponse(response);
       return {
         content: [
           {
             type: "text",
-            text: response,
+            text: result,
           },
         ],
       };
     } catch (error) {
-      console.error("Error researching deals:", error);
+      console.error("Error calling Deals agent:", error);
       return {
         isError: true,
         content: [
           {
             type: "text",
-            text: `Error researching deals: ${error instanceof Error ? error.message : String(error)}`,
+            text: `Error: Failed to process M&A/IPO query. ${error}`,
           },
         ],
       };
@@ -440,14 +345,92 @@ server.tool(
   }
 );
 
-// Start the server
+// Web Scraper Agent
+server.tool(
+  "octagon-scraper-agent",
+  "Extract data from any public website. Provide a URL and describe what information you want to extract from the page.",
+  {
+    prompt: z.string().describe("Your natural language query or request for the agent"),
+  },
+  async ({ prompt }: PromptParams) => {
+    try {
+      const response = await octagonClient.chat.completions.create({
+        model: "octagon-scraper-agent",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      });
+      
+      const result = await processStreamingResponse(response);
+      return {
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error calling Scraper agent:", error);
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: Failed to process web scraping query. ${error}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Deep Research Agent
+server.tool(
+  "octagon-deep-research-agent",
+  "Perform comprehensive research on any financial or business topic, combining multiple data sources and analysis methods for in-depth insights.",
+  {
+    prompt: z.string().describe("Your natural language query or request for the agent"),
+  },
+  async ({ prompt }: PromptParams) => {
+    try {
+      const response = await octagonClient.chat.completions.create({
+        model: "octagon-deep-research-agent",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      });
+      
+      const result = await processStreamingResponse(response);
+      return {
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error calling Deep Research agent:", error);
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: Failed to process deep research query. ${error}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Start the server with stdio transport
 async function main() {
   try {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error("Octagon MCP Server running on stdio");
+    console.log("Octagon MCP Server started successfully");
   } catch (error) {
-    console.error("Fatal error in main():", error);
+    console.error("Failed to start Octagon MCP Server:", error);
     process.exit(1);
   }
 }
