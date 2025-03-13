@@ -115,7 +115,7 @@ Add this to your `./codeium/windsurf/model_config.json`:
 
 To use Octagon MCP, you need to:
 
-1. Sign up for an account at [apps.octagonai.co](https://apps.octagonai.co)
+1. Sign up for an account at [app.octagonai.co](https://app.octagonai.co)
 2. After logging in, navigate to **Settings → API Keys** 
 3. Generate a new API key
 4. Use this API key in your configuration as the `OCTAGON_API_KEY` value
