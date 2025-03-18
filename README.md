@@ -188,6 +188,22 @@ Example:
 What was the acquisition price when Microsoft acquired GitHub?
 ```
 
+#### octagon-investors-agent
+A specialized database agent for looking up information on investors.
+
+Example:
+```
+What is the latest investment criteria of Insight Partners?
+```
+
+#### octagon-debts-agent
+A specialized database agent for analyzing private debts and lenders.
+
+Example:
+```
+List all the debt activities from borrower American Tower
+```
+
 ### Additional Tools
 
 #### octagon-scraper-agent
@@ -215,6 +231,8 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 5. "What was Anthropic's latest funding round size, valuation, and key investors?"
 6. "Extract all data fields from zillow.com/san-francisco-ca/"
 7. "Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins"
+8. "Compile all the debt activities from lender ING Group in Q4 2024"
+9. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
 
 ## Troubleshooting
 

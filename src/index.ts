@@ -75,7 +75,7 @@ type PromptParams = {
 // SEC Filings Agent
 server.tool(
   "octagon-sec-agent",
-  "Extract information from SEC filings like 10-K, 10-Q, 8-K, proxy statements, and other regulatory documents. Provide company name and specific questions about their filings.",
+  "A specialized agent for SEC filings analysis and financial data extraction. Covers over 8,000 public companies from SEC EDGAR with comprehensive coverage of financial statements from annual and quarterly reports (10-K, 10-Q, 20-F), offering filings (S-1), amendments, and event filings (8-K). Updated daily with historical data dating back to 2018 for time-series analysis. Best for extracting financial and segment metrics, management discussion, footnotes, risk factors, and quantitative data from SEC filings. Example queries: 'What was Apple's R&D expense as a percentage of revenue in their latest fiscal year?', 'Find the risk factors related to supply chain in Tesla's latest 10-K', 'Extract quarterly revenue growth rates for Microsoft over the past 2 years'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -114,7 +114,7 @@ server.tool(
 // Earnings Call Transcripts Agent
 server.tool(
   "octagon-transcripts-agent",
-  "Analyze earnings call transcripts for public companies. Ask specific questions about what was discussed in the latest or historical earnings calls.",
+  "A specialized agent for analyzing earnings call transcripts and management commentary. Covers over 8,000 public companies with continuous daily updates for real-time insights. Historical data dating back to 2018 enables robust time-series analysis. Extract information from earnings call transcripts, including executive statements, financial guidance, analyst questions, and forward-looking statements. Best for analyzing management sentiment, extracting guidance figures, and identifying key business trends. Example queries: 'What did Amazon's CEO say about AWS growth expectations in the latest earnings call?', 'Summarize key financial metrics mentioned in Tesla's Q2 2023 earnings call', 'What questions did analysts ask about margins during Netflix's latest earnings call?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -153,7 +153,7 @@ server.tool(
 // Financial Data Agent
 server.tool(
   "octagon-financials-agent",
-  "Retrieve financial metrics, ratios, and data for public companies. Ask for specific financial information or comparisons across companies and time periods.",
+  "Specialized agent for financial statement analysis and ratio calculations. Capabilities: Analyze financial statements, calculate financial metrics, compare ratios, and evaluate performance indicators. Best for: Deep financial analysis and comparison of company financial performance. Example queries: 'Compare the gross margins, operating margins, and net margins of Apple, Microsoft, and Google over the last 3 years', 'Analyze Tesla's cash flow statements from 2021 to 2023 and calculate free cash flow trends', 'Calculate and explain key financial ratios for Amazon including P/E, EV/EBITDA, and ROIC'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -192,7 +192,7 @@ server.tool(
 // Stock Market Data Agent
 server.tool(
   "octagon-stock-data-agent",
-  "Access stock market data, including prices, trading volumes, returns, and market trends. Ask questions about stock performance over specific time periods.",
+  "Specialized agent for stock market data and equity investment analysis. Capabilities: Analyze stock price movements, trading volumes, market trends, valuation metrics, and technical indicators. Best for: Stock market research, equity analysis, and trading pattern identification. Example queries: 'How has Apple's stock performed compared to the S&P 500 over the last 6 months?', 'Analyze the trading volume patterns for Tesla stock before and after earnings releases', 'What were the major price movements for NVIDIA in 2023 and what were the catalysts?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -231,7 +231,7 @@ server.tool(
 // Private Companies Agent
 server.tool(
   "octagon-companies-agent",
-  "Research private company information, including funding, key people, products, and market positioning. Ask specific questions about private companies.",
+  "A specialized database agent for looking up company information and financials. Capabilities: Query comprehensive company financial information and business intelligence from Octagon's company database. Best for: Finding basic information about companies, their financial metrics, and industry benchmarks. Example queries: 'What is the employee trends for Stripe?', 'List the top 5 companies in the AI sector by revenue growth', 'Who are the top competitors to Databricks?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -270,7 +270,7 @@ server.tool(
 // Funding Agent
 server.tool(
   "octagon-funding-agent",
-  "Research startup funding rounds and venture capital investments. Ask questions about fundraising, investments, and capital allocation in the private markets.",
+  "A specialized database agent for company funding transactions and venture capital research. Capabilities: Extract information about funding rounds, investors, valuations, and investment trends. Best for: Researching startup funding history, investor activity, and venture capital patterns. Example queries: 'What was Anthropic's latest funding round size, valuation, and key investors?', 'How much has OpenAI raised in total funding and at what valuation?', 'Who were the lead investors in Databricks' Series G round and what was the post-money valuation?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -309,7 +309,7 @@ server.tool(
 // M&A and IPO Deals Agent
 server.tool(
   "octagon-deals-agent",
-  "Research mergers, acquisitions, and IPO transactions. Ask questions about deal terms, valuations, and market implications of corporate transactions.",
+  "A specialized database agent for M&A and IPO transaction analysis. Capabilities: Retrieve information about mergers, acquisitions, initial public offerings, and other financial transactions. Best for: Research on corporate transactions, IPO valuations, and M&A activity. Example queries: 'What was the acquisition price when Microsoft acquired GitHub?', 'List the valuation multiples for AI companies in 2024', 'List all the acquisitions and price, valuation by Salesforce in 2023?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -345,10 +345,49 @@ server.tool(
   }
 );
 
+// Investors Agent
+server.tool(
+  "octagon-investors-agent",
+  "A specialized database agent for looking up information on investors. Capabilities: Retrieve information about investors, their investment criteria, and past activities. Best for: Research on investors and details about their investment activities. Example queries: 'What is the latest investment criteria of Insight Partners?', 'How many investments did Andreessen Horowitz make in the last 6 months', 'What is the typical check size for QED Investors'.",
+  {
+    prompt: z.string().describe("Your natural language query or request for the agent"),
+  },
+  async ({ prompt }: PromptParams) => {
+    try {
+      const response = await octagonClient.chat.completions.create({
+        model: "octagon-investors-agent",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      });
+      
+      const result = await processStreamingResponse(response);
+      return {
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error calling Investors agent:", error);
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: Failed to process investors query. ${error}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 // Web Scraper Agent
 server.tool(
   "octagon-scraper-agent",
-  "Extract data from any public website. Provide a URL and describe what information you want to extract from the page.",
+  "Specialized agent for financial data extraction from investor websites. Capabilities: Extract structured financial data from investor relations websites, tables, and online financial sources. Best for: Gathering financial data from websites that don't have accessible APIs. Example queries: 'Extract all data fields from zillow.com/san-francisco-ca/', 'Extract all data fields from www.carvana.com/cars/'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -387,7 +426,7 @@ server.tool(
 // Deep Research Agent
 server.tool(
   "octagon-deep-research-agent",
-  "Perform comprehensive research on any financial or business topic, combining multiple data sources and analysis methods for in-depth insights.",
+  "A comprehensive agent that can utilize multiple sources for deep research analysis. Capabilities: Aggregate research across multiple data sources, synthesize information, and provide comprehensive investment research. Best for: Investment research questions requiring up-to-date aggregated information from the web. Example queries: 'Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins', 'Analyze the competitive landscape in the cloud computing sector, focusing on AWS, Azure, and Google Cloud margin and growth trends', 'Investigate the factors driving electric vehicle adoption and their impact on battery supplier financials'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -426,7 +465,7 @@ server.tool(
 // Private Debts Agent
 server.tool(
   "octagon-debts-agent",
-  "A specialized database agent for analyzing private debts and lenders. Retrieve information about private debts and lenders, borrowers, and details about private debt facilities.",
+  "A specialized database agent for analyzing private debts and lenders. Capabilities: Retrieve information about private debts and lenders. Best for: Research on borrowers, and lenders and details about the private debt facilities. Example queries: 'List all the debt activities from borrower American Tower', 'Compile all the debt activities from lender ING Group in Q4 2024'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
