@@ -197,7 +197,7 @@ What is the latest investment criteria of Insight Partners?
 ```
 
 #### octagon-debts-agent
-A specialized database agent for analyzing private debts and lenders.
+A specialized database agent for analyzing private debts, borrowers, and lenders.
 
 Example:
 ```
