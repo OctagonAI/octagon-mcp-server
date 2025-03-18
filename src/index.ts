@@ -423,6 +423,45 @@ server.tool(
   }
 );
 
+// Private Debts Agent
+server.tool(
+  "octagon-debts-agent",
+  "A specialized database agent for analyzing private debts and lenders. Retrieve information about private debts and lenders, borrowers, and details about private debt facilities.",
+  {
+    prompt: z.string().describe("Your natural language query or request for the agent"),
+  },
+  async ({ prompt }: PromptParams) => {
+    try {
+      const response = await octagonClient.chat.completions.create({
+        model: "octagon-debts-agent",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      });
+      
+      const result = await processStreamingResponse(response);
+      return {
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error calling Debts agent:", error);
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: Failed to process private debts query. ${error}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 // Start the server with stdio transport
 async function main() {
   try {
