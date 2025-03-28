@@ -71,14 +71,17 @@ To configure Octagon MCP for Claude Desktop:
 2. Go to Settings > Developer > Edit Config
 3. Add the following to your `claude_desktop_config.json`:
    ```json
-   {
-     "mcpServers": {
-       "octagon": {
-         "command": "env",
-         "args": ["OCTAGON_API_KEY=your-octagon-api-key", "npx", "-y", "octagon-mcp"]
-       }
-     }
-   }
+{
+  "mcpServers": {
+    "octagon": {
+      "command": "npx",
+      "args": ["-y", "octagon-mcp"],
+      "env": {
+        "OCTAGON_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
    ```
 
 Replace `your-octagon-api-key` with your Octagon API key.
@@ -90,7 +93,7 @@ Add this to your `./codeium/windsurf/model_config.json`:
 ```json
 {
   "mcpServers": {
-    "mcp-server-octagon": {
+    "octagon": {
       "command": "npx",
       "args": ["-y", "octagon-mcp"],
       "env": {
