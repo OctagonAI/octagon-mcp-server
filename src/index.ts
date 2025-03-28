@@ -5,6 +5,16 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import dotenv from "dotenv";
 import OpenAI from "openai";
+import { readFile } from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get package.json info
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const packageJsonPath = path.join(__dirname, "..", "package.json");
+const packageJsonContent = await readFile(packageJsonPath, "utf8");
+const packageInfo = JSON.parse(packageJsonContent) as { name: string; version: string };
 
 // Load environment variables
 dotenv.config();
@@ -23,12 +33,15 @@ if (!OCTAGON_API_KEY) {
 const octagonClient = new OpenAI({
   apiKey: OCTAGON_API_KEY,
   baseURL: OCTAGON_API_BASE_URL,
+  defaultHeaders: {
+    "User-Agent": `${packageInfo.name}/${packageInfo.version} (Node.js/${process.versions.node})`
+  },
 });
 
 // Create MCP server
 const server = new McpServer({
-  name: "octagon-investment-research",
-  version: "1.0.0",
+  name: packageInfo.name,
+  version: packageInfo.version,
 });
 
 // Helper function to process streaming responses
