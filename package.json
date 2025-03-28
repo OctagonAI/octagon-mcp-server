@@ -1,6 +1,6 @@
 {
   "name": "octagon-mcp",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "MCP server for Octagon API. Provides specialized AI agents for investment research of public and private markets.",
   "main": "dist/index.js",
   "type": "module",
