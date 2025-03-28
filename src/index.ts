@@ -55,6 +55,14 @@ async function processStreamingResponse(stream: any): Promise<string> {
       }
     }
     
+    // If citations are available, append them to the response
+    if (citations && citations.length > 0) {
+      fullResponse += "\n\nSOURCES:";
+      citations.forEach(citation => {
+        fullResponse += `\n${citation.order}. ${citation.name}: ${citation.url}`;
+      });
+    }
+    
     return fullResponse;
   } catch (error) {
     console.error("Error processing streaming response:", error);
@@ -85,6 +93,7 @@ server.tool(
         model: "octagon-sec-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -124,6 +133,7 @@ server.tool(
         model: "octagon-transcripts-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -163,6 +173,7 @@ server.tool(
         model: "octagon-financials-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -202,6 +213,7 @@ server.tool(
         model: "octagon-stock-data-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -231,7 +243,7 @@ server.tool(
 // Private Companies Agent
 server.tool(
   "octagon-companies-agent",
-  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for looking up company information and financials. Capabilities: Query comprehensive company financial information and business intelligence from Octagon's company database. Best for: Finding basic information about companies, their financial metrics, and industry benchmarks. Example queries: 'What is the employee trends for Stripe?', 'List the top 5 companies in the AI sector by revenue growth', 'Who are the top competitors to Databricks?'.",
+  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for looking up company information and financials. Capabilities: Query comprehensive company financial information and business intelligence from Octagon's company database. Best for: Finding basic information about companies, their financial metrics, and industry benchmarks. NOTE: For better and more accurate results, provide the company's website URL instead of just the company name. Example queries: 'What is the employee trends for Stripe (stripe.com)?', 'List the top 5 companies in the AI sector by revenue growth', 'Who are the top competitors to Databricks (databricks.com)?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -241,6 +253,7 @@ server.tool(
         model: "octagon-companies-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -270,7 +283,7 @@ server.tool(
 // Funding Agent
 server.tool(
   "octagon-funding-agent",
-  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for company funding transactions and venture capital research. Capabilities: Extract information about funding rounds, investors, valuations, and investment trends. Best for: Researching startup funding history, investor activity, and venture capital patterns. Example queries: 'What was Anthropic's latest funding round size, valuation, and key investors?', 'How much has OpenAI raised in total funding and at what valuation?', 'Who were the lead investors in Databricks' Series G round and what was the post-money valuation?'.",
+  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for company funding transactions and venture capital research. Capabilities: Extract information about funding rounds, investors, valuations, and investment trends. Best for: Researching startup funding history, investor activity, and venture capital patterns. NOTE: For better and more accurate results, provide the company's website URL instead of just the company name. Example queries: 'What was Anthropic's latest funding round size, valuation, and key investors (anthropic.com)?', 'How much has OpenAI raised in total funding and at what valuation (openai.com)?', 'Who were the lead investors in Databricks' Series G round and what was the post-money valuation (databricks.com)?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -280,6 +293,7 @@ server.tool(
         model: "octagon-funding-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -309,7 +323,7 @@ server.tool(
 // M&A and IPO Deals Agent
 server.tool(
   "octagon-deals-agent",
-  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for M&A and IPO transaction analysis. Capabilities: Retrieve information about mergers, acquisitions, initial public offerings, and other financial transactions. Best for: Research on corporate transactions, IPO valuations, and M&A activity. Example queries: 'What was the acquisition price when Microsoft acquired GitHub?', 'List the valuation multiples for AI companies in 2024', 'List all the acquisitions and price, valuation by Salesforce in 2023?'.",
+  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for M&A and IPO transaction analysis. Capabilities: Retrieve information about mergers, acquisitions, initial public offerings, and other financial transactions. Best for: Research on corporate transactions, IPO valuations, and M&A activity. NOTE: For better and more accurate results, provide the company's website URL instead of just the company name. Example queries: 'What was the acquisition price when Microsoft (microsoft.com) acquired GitHub (github.com)?', 'List the valuation multiples for AI companies in 2024', 'List all the acquisitions and price, valuation by Salesforce (salesforce.com) in 2023?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -319,6 +333,7 @@ server.tool(
         model: "octagon-deals-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -348,7 +363,7 @@ server.tool(
 // Investors Agent
 server.tool(
   "octagon-investors-agent",
-  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for looking up information on investors. Capabilities: Retrieve information about investors, their investment criteria, and past activities. Best for: Research on investors and details about their investment activities. Example queries: 'What is the latest investment criteria of Insight Partners?', 'How many investments did Andreessen Horowitz make in the last 6 months', 'What is the typical check size for QED Investors'.",
+  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for looking up information on investors. Capabilities: Retrieve information about investors, their investment criteria, and past activities. Best for: Research on investors and details about their investment activities. NOTE: For better and more accurate results, provide the investor's website URL instead of just the investor name. Example queries: 'What is the latest investment criteria of Insight Partners (insightpartners.com)?', 'How many investments did Andreessen Horowitz (a16z.com) make in the last 6 months', 'What is the typical check size for QED Investors (qedinvestors.com)'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -358,6 +373,7 @@ server.tool(
         model: "octagon-investors-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -397,6 +413,7 @@ server.tool(
         model: "octagon-scraper-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -436,6 +453,7 @@ server.tool(
         model: "octagon-deep-research-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
@@ -475,6 +493,7 @@ server.tool(
         model: "octagon-debts-agent",
         messages: [{ role: "user", content: prompt }],
         stream: true,
+        metadata: { tool: "mcp" }
       });
       
       const result = await processStreamingResponse(response);
