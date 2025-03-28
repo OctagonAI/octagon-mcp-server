@@ -75,7 +75,7 @@ To configure Octagon MCP for Claude Desktop:
   "mcpServers": {
     "octagon": {
       "command": "npx",
-      "args": ["-y", "octagon-mcp"],
+      "args": ["-y", "octagon-mcp@latest"],
       "env": {
         "OCTAGON_API_KEY": "YOUR_API_KEY_HERE"
       }
@@ -95,7 +95,7 @@ Add this to your `./codeium/windsurf/model_config.json`:
   "mcpServers": {
     "octagon": {
       "command": "npx",
-      "args": ["-y", "octagon-mcp"],
+      "args": ["-y", "octagon-mcp@latest"],
       "env": {
         "OCTAGON_API_KEY": "YOUR_API_KEY_HERE"
       }
