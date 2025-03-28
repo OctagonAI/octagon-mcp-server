@@ -525,9 +525,7 @@ async function main() {
   try {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.log("Octagon MCP Server started successfully");
   } catch (error) {
-    console.error("Failed to start Octagon MCP Server:", error);
     process.exit(1);
   }
 }
