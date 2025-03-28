@@ -17,16 +17,14 @@ A Model Context Protocol (MCP) server implementation that integrates with Octago
 - Streaming support for real-time responses
 - Simple interface with a single "prompt" parameter for all tools
 
-## Documentation
+## Getting an API Key
 
-For comprehensive documentation on using Octagon agents, please visit our official documentation at:
-[https://docs.octagonagents.com](https://docs.octagonagents.com)
+To use Octagon MCP, you need to:
 
-The documentation includes:
-- Detailed API references
-- Agent-specific query guidelines
-- Examples and use cases
-- Best practices for investment research
+1. Sign up for a free account at [Octagon](https://app.octagonai.co/signup)
+2. After logging in, navigate to **Settings → API Keys** 
+3. Generate a new API key
+4. Use this API key in your configuration as the `OCTAGON_API_KEY` value
 
 ## Installation
 
@@ -104,6 +102,17 @@ Add this to your `./codeium/windsurf/model_config.json`:
 }
 ```
 
+## Documentation
+
+For comprehensive documentation on using Octagon agents, please visit our official documentation at:
+[https://docs.octagonagents.com](https://docs.octagonagents.com)
+
+The documentation includes:
+- Detailed API references
+- Agent-specific query guidelines
+- Examples and use cases
+- Best practices for investment research
+
 ## Configuration
 
 ### Environment Variables
@@ -113,19 +122,6 @@ Add this to your `./codeium/windsurf/model_config.json`:
 - `OCTAGON_API_KEY`: Your Octagon API key
   - Required for all operations
   - Sign up at [Octagon](https://octagonagents.com) if you don't have an API key
-
-#### Getting an API Key
-
-To use Octagon MCP, you need to:
-
-1. Sign up for an account at [app.octagonai.co](https://app.octagonai.co)
-2. After logging in, navigate to **Settings → API Keys** 
-3. Generate a new API key
-4. Use this API key in your configuration as the `OCTAGON_API_KEY` value
-
-#### Optional Configuration
-
-- `OCTAGON_API_BASE_URL`: Custom API endpoint (default: https://api.octagonagents.com/v1)
 
 ## Available Tools
 
