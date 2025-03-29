@@ -68,7 +68,7 @@ To configure Octagon MCP for Claude Desktop:
 1. Open Claude Desktop
 2. Go to Settings > Developer > Edit Config
 3. Add the following to your `claude_desktop_config.json`:
-   ```json
+```json
 {
   "mcpServers": {
     "octagon": {
@@ -80,7 +80,7 @@ To configure Octagon MCP for Claude Desktop:
     }
   }
 }
-   ```
+```
 
 Replace `your-octagon-api-key` with your Octagon API key.
 
