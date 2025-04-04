@@ -1,19 +1,19 @@
-# Octagon: MCP For Investment Research
+# Octagon: MCP For Market Intelligence
 
-A Model Context Protocol (MCP) server implementation that integrates with Octagon API for investment research capabilities.
+A Model Context Protocol (MCP) server implementation that integrates with Octagon Market Intelligence API.
 
 ## Features
 
-- Specialized AI agents for investment research of public and private markets
+- Specialized AI agents for public and private market intelligence
 - SEC filings analysis and data extraction
 - Earnings call transcript analysis
 - Financial metrics and ratios analysis
 - Stock market data access
 - Private company research
-- Web scraping capabilities
-- Comprehensive research tools
 - Funding rounds and venture capital research
 - M&A and IPO transaction research
+- Web scraping capabilities
+- Comprehensive research tools
 - Streaming support for real-time responses
 - Simple interface with a single "prompt" parameter for all tools
 
