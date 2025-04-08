@@ -2,12 +2,12 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
 import dotenv from "dotenv";
-import OpenAI from "openai";
 import { readFile } from "fs/promises";
+import OpenAI from "openai";
 import path from "path";
 import { fileURLToPath } from "url";
+import { z } from "zod";
 
 // Get package.json info
 const __filename = fileURLToPath(import.meta.url);
@@ -55,27 +55,19 @@ async function processStreamingResponse(stream: any): Promise<string> {
       // For Chat Completions API
       if (chunk.choices && chunk.choices[0]?.delta?.content) {
         fullResponse += chunk.choices[0].delta.content;
-        
+
         // Check for citations in the final chunk
         if (chunk.choices[0]?.finish_reason === "stop" && chunk.choices[0]?.citations) {
           citations = chunk.choices[0].citations;
         }
       }
-      
+
       // For Responses API
       if (chunk.type === "response.output_text.delta") {
         fullResponse += chunk.text?.delta || "";
       }
     }
-    
-    // If citations are available, append them to the response
-    if (citations && citations.length > 0) {
-      fullResponse += "\n\nSOURCES:";
-      citations.forEach(citation => {
-        fullResponse += `\n${citation.order}. ${citation.name}: ${citation.url}`;
-      });
-    }
-    
+
     return fullResponse;
   } catch (error) {
     console.error("Error processing streaming response:", error);
@@ -108,7 +100,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -148,7 +140,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -188,7 +180,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -228,7 +220,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -268,7 +260,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -308,7 +300,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -348,7 +340,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -388,7 +380,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -428,7 +420,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -468,7 +460,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
@@ -508,7 +500,7 @@ server.tool(
         stream: true,
         metadata: { tool: "mcp" }
       });
-      
+
       const result = await processStreamingResponse(response);
       return {
         content: [
