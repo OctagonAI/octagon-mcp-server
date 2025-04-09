@@ -4,12 +4,13 @@ A Model Context Protocol (MCP) server implementation that integrates with Octago
 
 ## Features
 
-- Specialized AI agents for public and private market intelligence
-- SEC filings analysis and data extraction
-- Earnings call transcript analysis
-- Financial metrics and ratios analysis
-- Stock market data access
-- Private company research
+- Specialized AI agents for public market intelligence
+   - SEC filings analysis and data extraction
+   - Earnings call transcript analysis
+   - Financial metrics and ratios analysis
+   - Stock market data access
+- Specialized AI agents for private market intelligence
+   - Private company research
 - Funding rounds and venture capital research
 - M&A and IPO transaction research
 - Web scraping capabilities
