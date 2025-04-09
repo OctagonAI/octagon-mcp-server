@@ -11,8 +11,9 @@ A Model Context Protocol (MCP) server implementation that integrates with Octago
    - Stock market data access
 - Specialized AI agents for private market intelligence
    - Private company research
-- Funding rounds and venture capital research
-- M&A and IPO transaction research
+   - Funding rounds and venture capital research
+   - M&A and IPO transaction research
+   - Debt transactions research
 - Web scraping capabilities
 - Comprehensive research tools
 - Streaming support for real-time responses
@@ -233,6 +234,9 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 7. "Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins"
 8. "Compile all the debt activities from lender ING Group in Q4 2024"
 9. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
+
+## Demo
+
 
 ## Troubleshooting
 
