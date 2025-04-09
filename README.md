@@ -1,7 +1,7 @@
 # Octagon: MCP For Market Intelligence
 
 A Model Context Protocol (MCP) server implementation that integrates with Octagon Market Intelligence API.
-[![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.gif))
+[![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.mp4))
 
 ## Features
 
