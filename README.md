@@ -1,6 +1,7 @@
 # Octagon: MCP For Market Intelligence
 
 A Model Context Protocol (MCP) server implementation that integrates with Octagon Market Intelligence API.
+[![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.gif))
 
 ## Features
 
@@ -235,10 +236,6 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 7. "Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins"
 8. "Compile all the debt activities from lender ING Group in Q4 2024"
 9. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
-
-## Demo
-
-![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)
 
 ## Troubleshooting
 
