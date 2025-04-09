@@ -238,7 +238,7 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 
 ## Demo
 👉 
-![MCP demo] (https://docs.octagonagents.com/Financial_model_demo.gif)
+![MCP demo] (https://docs.octagonagents.com/financial_model_demo.gif)
 
 ## Troubleshooting
 
