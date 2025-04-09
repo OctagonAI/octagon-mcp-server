@@ -10,7 +10,7 @@
    - SEC filings analysis and data extraction (8000+ public companies 10-K, 10-Q, 8-K, 20-F, S-1)
    - Earnings call transcript analysis (10 yrs of historical and current)
    - Financial metrics and ratios analysis (10 yrs of historical and current)
-   - Stock market data access 
+   - Stock market data access (over 10,000 active tickers, daily historical and current)
      
 ✅ Specialized AI agents for **private market intelligence**
    - Private company research (3M+ companies)
