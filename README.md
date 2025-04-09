@@ -237,8 +237,8 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 9. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
 
 ## Demo
-👉 
-![MCP demo] (https://docs.octagonagents.com/financial_model_demo.gif)
+
+![Demo](https://docs.octagonagents.com/financial_model_demo.gif)
 
 ## Troubleshooting
 
@@ -249,3 +249,5 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 ## License
 
 MIT 
+
+👉 “⭐ Star this repo if you find it helpful!"
