@@ -6,13 +6,13 @@
 
 ## Features
 
-✅ Specialized AI agents for **public market intelligence**
+✅ Specialized AI agents for **public market data**
    - SEC filings analysis and data extraction (8000+ public companies 10-K, 10-Q, 8-K, 20-F, S-1)
    - Earnings call transcript analysis (10 yrs of historical and current)
    - Financial metrics and ratios analysis (10 yrs of historical and current)
    - Stock market data access (over 10,000 active tickers, daily historical and current)
      
-✅ Specialized AI agents for **private market intelligence**
+✅ Specialized AI agents for **private market data**
    - Private company research (3M+ companies)
    - Funding rounds and venture capital research (500k+ deals)
    - M&A and IPO transaction research (2M+ deals)
