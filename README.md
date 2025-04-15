@@ -28,7 +28,7 @@
 To use Octagon MCP, you need to:
 
 1. Sign up for a free account at [Octagon](https://app.octagonai.co/signup)
-2. After logging in, navigate to **Settings → API Keys** 
+2. After logging in, from left menu, navigate to **API Keys** 
 3. Generate a new API key
 4. Use this API key in your configuration as the `OCTAGON_API_KEY` value
 
