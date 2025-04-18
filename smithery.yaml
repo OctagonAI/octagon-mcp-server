@@ -1,0 +1,16 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - octagonApiKey
+    properties:
+      octagonApiKey:
+        type: string
+        description: API key for accessing the Octagon service
+  commandFunction: |
+    (config) => ({
+      command: 'node',
+      args: ['dist/index.js'],
+      env: { OCTAGON_API_KEY: config.octagonApiKey }
+    }) 
