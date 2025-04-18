@@ -32,81 +32,72 @@ To use Octagon MCP, you need to:
 3. Generate a new API key
 4. Use this API key in your configuration as the `OCTAGON_API_KEY` value
 
-## Installation
+### Client Installation Instructions
 
-### Running with npx
-
-```bash
-env OCTAGON_API_KEY=your_octagon_api_key npx -y octagon-mcp
-```
-
-### Manual Installation
-
-```bash
-npm install -g octagon-mcp
-```
-
-### Running on Cursor
-
-Configuring Cursor 🖥️
-Note: Requires Cursor version 0.45.6+
-
-To configure Octagon MCP in Cursor:
-
-1. Open Cursor Settings
-2. Go to Features > MCP Servers 
-3. Click "+ Add New MCP Server"
-4. Enter the following:
-   - Name: "octagon-mcp" (or your preferred name)
-   - Type: "command"
-   - Command: `env OCTAGON_API_KEY=your-octagon-api-key npx -y octagon-mcp`
-
-> If you are using Windows and are running into issues, try `cmd /c "set OCTAGON_API_KEY=your-octagon-api-key && npx -y octagon-mcp"`
-
-Replace `your-octagon-api-key` with your Octagon API key.
-
-After adding, refresh the MCP server list to see the new tools. The Composer Agent will automatically use Octagon MCP when appropriate, but you can explicitly request it by describing your investment research needs. Access the Composer via Command+L (Mac), select "Agent" next to the submit button, and enter your query.
-
-### Running on Claude Desktop
+#### Running on Claude Desktop
 
 To configure Octagon MCP for Claude Desktop:
 
-1. Open Claude Desktop
-2. Go to Settings > Developer > Edit Config
-3. Add the following to your `claude_desktop_config.json` (Replace `your-octagon-api-key` with your Octagon API key):
-```json
-{
-  "mcpServers": {
-    "octagon": {
-      "command": "npx",
-      "args": ["-y", "octagon-mcp@latest"],
-      "env": {
-        "OCTAGON_API_KEY": "YOUR_API_KEY_HERE"
-      }
-    }
-  }
-}
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client claude
 ```
-4. Restart Claude for the changes to take effect
 
+#### Running on Cursor
 
-### Running on Windsurf
+To configure Octagon MCP in Cursor:
 
-Add this to your `./codeium/windsurf/model_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "octagon": {
-      "command": "npx",
-      "args": ["-y", "octagon-mcp@latest"],
-      "env": {
-        "OCTAGON_API_KEY": "YOUR_API_KEY_HERE"
-      }
-    }
-  }
-}
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client cursor
 ```
+
+#### Running on VSCode
+
+To configure Octagon MCP for VSCode:
+
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client vscode
+```
+
+#### Running on VSCode Insiders
+
+To configure Octagon MCP for VSCode Insiders:
+
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client vscode-insiders
+```
+
+#### Running on Windsurf
+
+To configure Octagon MCP for Windsurf:
+
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client windsurf
+```
+
+#### Running on Roocode
+
+To configure Octagon MCP for Roocode:
+
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client roocode
+```
+
+#### Running on Witsy
+
+To configure Octagon MCP for Witsy:
+
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client witsy
+```
+
+#### Running on Enconvo
+
+To configure Octagon MCP for Enconvo:
+
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client enconvo
+```
+
 
 ## Documentation
 
@@ -245,8 +236,22 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 2. **Connection Issues**: Make sure the connectivity to the Octagon API is working properly.
 3. **Rate Limiting**: If you encounter rate limiting errors, reduce the frequency of your requests.
 
+## Installation
+
+### Running with npx
+
+```bash
+env OCTAGON_API_KEY=your_octagon_api_key npx -y octagon-mcp
+```
+
+### Manual Installation
+
+```bash
+npm install -g octagon-mcp
+```
+
 ## License
 
 MIT 
 
-👉 “⭐ Star this repo if you find it helpful!"
+👉 "⭐ Star this repo if you find it helpful!"
