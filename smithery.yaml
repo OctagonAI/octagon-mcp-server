@@ -7,7 +7,7 @@ startCommand:
     properties:
       octagonApiKey:
         type: string
-        description: API key for accessing the Octagon service
+        description: Your Octagon API key
   commandFunction: |
     (config) => ({
       command: 'node',
