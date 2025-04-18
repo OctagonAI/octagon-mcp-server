@@ -5,6 +5,10 @@
 
 [![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.mp4))
 
+```bash
+npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client claude
+```
+
 ## Features
 
 ✅ Specialized AI agents for **public market data**
