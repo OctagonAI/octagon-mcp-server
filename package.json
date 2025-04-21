@@ -17,6 +17,7 @@
     "build": "tsc && node -e \"require('fs').chmodSync('dist/index.js', '755')\"",
     "test": "echo \"No tests specified\"",
     "start": "node dist/index.js",
+    "start-sse": "node dist/sse.js",
     "lint": "echo \"No linting configured\"",
     "format": "echo \"No formatting configured\"",
     "prepare": "npm run build",
@@ -41,6 +42,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
     "@types/node": "^20.10.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.2"
