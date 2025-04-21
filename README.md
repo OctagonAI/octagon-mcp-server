@@ -5,7 +5,7 @@
 
 [![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.mp4))
 
-Install Octagon for Claude in one step:
+Install Octagon MCP for Claude in one step:
 ```bash
 npx -y @smithery/cli@latest install @OctagonAI/octagon-mcp-server --client claude
 ```
