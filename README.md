@@ -3,7 +3,7 @@
 
 ![Favicon](https://docs.octagonagents.com/logo.svg) This Model Context Protocol (MCP) server provides specialized AI-powered financial research and analysis by integrating with the Octagon Market Intelligence API, enabling users to easily analyze and extract detailed insights from public filings, earnings call transcripts, financial metrics, stock market data, and extensive private market transactions.
 
-[![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.mp4))
+[![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.mp4)
 
 Install Octagon MCP for Claude in one step:
 ```bash
