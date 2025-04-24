@@ -124,7 +124,7 @@ The documentation includes:
 
 - `OCTAGON_API_KEY`: Your Octagon API key
   - Required for all operations
-  - Sign up at [Octagon](https://octagonagents.com) if you don't have an API key
+  - Sign up at [Octagon](https://app.octagonai.co/signup) if you don't have an API key
 
 ## Available Tools
 
