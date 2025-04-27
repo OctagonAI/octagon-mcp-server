@@ -73,26 +73,6 @@ If you see version numbers for all three, you are ready to proceed with the inst
 
 ## Installation
 
-### Running on Cursor
-
-Configuring Cursor Desktop 🖥️
-Note: Requires Cursor version 0.45.6+
-
-To configure Octagon MCP in Cursor:
-
-1. Open Cursor Settings
-2. Go to Features > MCP Servers 
-3. Click "+ Add New MCP Server"
-4. Enter the following:
-   - Name: "octagon-mcp" (or your preferred name)
-   - Type: "command"
-   - Command: `env OCTAGON_API_KEY=your-octagon-api-key npx -y octagon-mcp`
-
-> If you are using Windows and are running into issues, try `cmd /c "set OCTAGON_API_KEY=your-octagon-api-key && npx -y octagon-mcp"`
-
-Replace `your-octagon-api-key` with your Octagon API key.
-
-After adding, refresh the MCP server list to see the new tools. The Composer Agent will automatically use Octagon MCP when appropriate, but you can explicitly request it by describing your investment research needs. Access the Composer via Command+L (Mac), select "Agent" next to the submit button, and enter your query.
 
 ### Running on Claude Desktop
 
@@ -115,6 +95,28 @@ To configure Octagon MCP for Claude Desktop:
 }
 ```
 4. Restart Claude for the changes to take effect
+
+### Running on Cursor
+
+Configuring Cursor Desktop 🖥️
+Note: Requires Cursor version 0.45.6+
+
+To configure Octagon MCP in Cursor:
+
+1. Open Cursor Settings
+2. Go to Features > MCP Servers 
+3. Click "+ Add New MCP Server"
+4. Enter the following:
+   - Name: "octagon-mcp" (or your preferred name)
+   - Type: "command"
+   - Command: `env OCTAGON_API_KEY=your-octagon-api-key npx -y octagon-mcp`
+
+> If you are using Windows and are running into issues, try `cmd /c "set OCTAGON_API_KEY=your-octagon-api-key && npx -y octagon-mcp"`
+
+Replace `your-octagon-api-key` with your Octagon API key.
+
+After adding, refresh the MCP server list to see the new tools. The Composer Agent will automatically use Octagon MCP when appropriate, but you can explicitly request it by describing your investment research needs. Access the Composer via Command+L (Mac), select "Agent" next to the submit button, and enter your query.
+
 
 
 ### Running on Windsurf
