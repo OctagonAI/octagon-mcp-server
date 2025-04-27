@@ -33,6 +33,44 @@ To use Octagon MCP, you need to:
 3. Generate a new API key
 4. Use this API key in your configuration as the `OCTAGON_API_KEY` value
 
+## Prerequisites
+
+Before installing or running Octagon MCP, you need to have `npx` (which comes with Node.js and npm) installed on your system.
+
+### Mac (macOS)
+
+1. **Install Homebrew** (if you don't have it):
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+2. **Install Node.js (includes npm and npx):**
+   ```bash
+   brew install node
+   ```
+   This will install the latest version of Node.js, npm, and npx.
+
+3. **Verify installation:**
+   ```bash
+   node -v
+   npm -v
+   npx -v
+   ```
+
+### Windows
+
+1. **Download the Node.js installer:**
+   - Go to [https://nodejs.org/](https://nodejs.org/) and download the LTS version for Windows.
+2. **Run the installer** and follow the prompts. This will install Node.js, npm, and npx.
+3. **Verify installation:**
+   Open Command Prompt and run:
+   ```cmd
+   node -v
+   npm -v
+   npx -v
+   ```
+
+If you see version numbers for all three, you are ready to proceed with the installation steps below.
+
 ## Installation
 
 ### Running on Cursor
