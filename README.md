@@ -42,7 +42,7 @@ To use Octagon MCP, you need to:
 
 ### Running on Cursor
 
-Configuring Cursor 🖥️
+Configuring Cursor Desktop 🖥️
 Note: Requires Cursor version 0.45.6+
 
 To configure Octagon MCP in Cursor:
@@ -54,6 +54,7 @@ To configure Octagon MCP in Cursor:
    - Name: "octagon-mcp" (or your preferred name)
    - Type: "command"
    - Command: `env OCTAGON_API_KEY=your-octagon-api-key npx -y octagon-mcp`
+5. Restart Claude Desktop for the changes to take effect
 
 > If you are using Windows and are running into issues, try `cmd /c "set OCTAGON_API_KEY=your-octagon-api-key && npx -y octagon-mcp"`
 
