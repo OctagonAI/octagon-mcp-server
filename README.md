@@ -54,7 +54,6 @@ To configure Octagon MCP in Cursor:
    - Name: "octagon-mcp" (or your preferred name)
    - Type: "command"
    - Command: `env OCTAGON_API_KEY=your-octagon-api-key npx -y octagon-mcp`
-5. Restart Claude Desktop for the changes to take effect
 
 > If you are using Windows and are running into issues, try `cmd /c "set OCTAGON_API_KEY=your-octagon-api-key && npx -y octagon-mcp"`
 
@@ -72,7 +71,7 @@ To configure Octagon MCP for Claude Desktop:
 ```json
 {
   "mcpServers": {
-    "octagon": {
+    "octagon-mcp-server": {
       "command": "npx",
       "args": ["-y", "octagon-mcp@latest"],
       "env": {
@@ -92,7 +91,7 @@ Add this to your `./codeium/windsurf/model_config.json`:
 ```json
 {
   "mcpServers": {
-    "octagon": {
+    "octagon-mcp-server": {
       "command": "npx",
       "args": ["-y", "octagon-mcp@latest"],
       "env": {
