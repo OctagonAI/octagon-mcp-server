@@ -125,8 +125,6 @@ The documentation includes:
 - Examples and use cases
 - Best practices for investment research
 
-## Configuration
-
 ## Available Tools
 
 Each tool uses a single `prompt` parameter that accepts a natural language query. Include all relevant details in your prompt.
