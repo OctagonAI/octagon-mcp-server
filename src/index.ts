@@ -325,6 +325,46 @@ server.tool(
   }
 );
 
+// Funds Agent
+server.tool(
+  "octagon-funds-agent",
+  "[PRIVATE MARKET INTELLIGENCE] A specialized agent for analyzing venture capital and private equity funds. Capabilities: Retrieve information about fund strategies, fund sizes, target sectors, LPs, fund performance, and fundraising activities. Best for: Understanding private market fund characteristics, tracking fundraising events, and identifying active funds by region or focus. Example queries: 'List top-performing venture capital funds launched in 2020', 'What sectors does Andreessen Horowitz's latest fund target?', 'What are the typical LPs in early-stage crypto funds?', 'Which funds closed the largest raises in Q1 2024?'",
+  {
+    prompt: z.string().describe("Your natural language query or request for the agent"),
+  },
+  async ({ prompt }: PromptParams) => {
+    try {
+      const response = await octagonClient.chat.completions.create({
+        model: "octagon-funds-agent",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+        metadata: { tool: "mcp" }
+      });
+
+      const result = await processStreamingResponse(response);
+      return {
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error calling Funds agent:", error);
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: Failed to process funds query. ${error}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 // M&A and IPO Deals Agent
 server.tool(
   "octagon-deals-agent",
