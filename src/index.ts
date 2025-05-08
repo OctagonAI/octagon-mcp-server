@@ -288,7 +288,7 @@ server.tool(
 // Funding Agent
 server.tool(
   "octagon-funding-agent",
-  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for company funding transactions and venture capital research. Capabilities: Extract information about funding rounds, investors, valuations, and investment trends. Best for: Researching startup funding history, investor activity, and venture capital patterns. NOTE: For better and more accurate results, provide the company's website URL instead of just the company name. Example queries: 'What was Anthropic's latest funding round size, valuation, and key investors (anthropic.com)?', 'How much has OpenAI raised in total funding and at what valuation (openai.com)?', 'Who were the lead investors in Databricks' Series G round and what was the post-money valuation (databricks.com)?'.",
+  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for company funding transactions. Capabilities: Extract information about funding rounds, investors, valuations, and investment trends. Best for: Researching startup funding history, investor activity, and venture capital patterns. NOTE: For better and more accurate results, provide the company's website URL instead of just the company name. Example queries: 'What was Anthropic's latest funding round size, valuation, and key investors (anthropic.com)?', 'How much has OpenAI raised in total funding and at what valuation (openai.com)?', 'Who were the lead investors in Databricks' Series G round and what was the post-money valuation (databricks.com)?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -328,7 +328,7 @@ server.tool(
 // Funds Agent
 server.tool(
   "octagon-funds-agent",
-  "[PRIVATE MARKET INTELLIGENCE] A specialized agent for analyzing venture capital and private equity funds. Capabilities: Retrieve information about fund strategies, fund sizes, target sectors, LPs, fund performance, and fundraising activities. Best for: Understanding private market fund characteristics, tracking fundraising events, and identifying active funds by region or focus. Example queries: 'List top-performing venture capital funds launched in 2020', 'What sectors does Andreessen Horowitz's latest fund target?', 'What are the typical LPs in early-stage crypto funds?', 'Which funds closed the largest raises in Q1 2024?'",
+  "[PRIVATE MARKET INTELLIGENCE] A specialized agent for analyzing investment funds. Capabilities: Retrieve information about fund strategies, fund sizes, target sectors, LPs, dry powder, fund performance, distributions, and fundraising activities. Best for: Understanding private market fund characteristics, tracking fundraising events, and identifying active funds by region or focus. Example queries: 'List top-performing venture capital funds launched in 2020', 'What sectors does Andreessen Horowitz's latest fund target?', 'What are the typical LPs in early-stage crypto funds?', 'Which funds closed the largest raises in Q1 2024?'",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -408,7 +408,7 @@ server.tool(
 // Investors Agent
 server.tool(
   "octagon-investors-agent",
-  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for looking up information on investors. Capabilities: Retrieve information about investors, their investment criteria, and past activities. Best for: Research on investors and details about their investment activities. NOTE: For better and more accurate results, provide the investor's website URL instead of just the investor name. Example queries: 'What is the latest investment criteria of Insight Partners (insightpartners.com)?', 'How many investments did Andreessen Horowitz (a16z.com) make in the last 6 months', 'What is the typical check size for QED Investors (qedinvestors.com)'.",
+  "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for looking up information on investors including angel investors, venture capital, and private equity. Capabilities: Retrieve information about investors, their investment criteria, and past activities. Best for: Research on investors and details about their investment activities. NOTE: For better and more accurate results, provide the investor's website URL instead of just the investor name. Example queries: 'What is the latest investment criteria of Insight Partners (insightpartners.com)?', 'How many investments did Andreessen Horowitz (a16z.com) make in the last 6 months', 'What is the typical check size for QED Investors (qedinvestors.com)'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
