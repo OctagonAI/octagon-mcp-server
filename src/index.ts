@@ -208,7 +208,7 @@ server.tool(
 // Stock Market Data Agent
 server.tool(
   "octagon-stock-data-agent",
-  "[PUBLIC MARKET INTELLIGENCE] Specialized agent for stock market data and equity investment analysis. Capabilities: Analyze stock price movements, trading volumes, market trends, valuation metrics, and technical indicators. Best for: Stock market research, equity analysis, and trading pattern identification. Example queries: 'How has Apple's stock performed compared to the S&P 500 over the last 6 months?', 'Analyze the trading volume patterns for Tesla stock before and after earnings releases', 'What were the major price movements for NVIDIA in 2023 and what were the catalysts?'.",
+  "[PUBLIC MARKET INTELLIGENCE] Specialized agent for stock market data and valuation analysis. Capabilities: Analyze stock price movements, trading volumes, market trends, valuation metrics including P/E, EV/S ratios, and technical indicators. Best for: Stock market research, equity analysis, and trading pattern identification. Example queries: 'How has Apple's stock performed compared to the S&P 500 over the last 6 months?', 'What is the monthly P/E ratio for NVDA over the past 24 months?', 'Analyze the trading volume patterns for Tesla stock before and after earnings releases', 'What were the major price movements for NVIDIA in 2023 and what were the catalysts?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
