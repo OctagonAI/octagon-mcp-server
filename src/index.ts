@@ -168,7 +168,7 @@ server.tool(
 // Financial Data Agent
 server.tool(
   "octagon-financials-agent",
-  "[PUBLIC MARKET INTELLIGENCE] Specialized agent for public companies' financial statement analysis and ratio calculations. Capabilities: Analyze financial statements including income statements, balance sheets, cash flow statements, product segments, geographic segments, calculate financial metrics, growth rates, compare ratios, and evaluate performance indicators. Best for: Deep financial analysis and comparison of company financial performance. Example queries: 'Compare the gross margins, operating margins, and net margins of Apple, Microsoft, and Google over the last 3 years', 'Analyze Tesla's cash flow statements from 2021 to 2023 and calculate free cash flow trends', 'Calculate and explain key financial ratios for Amazon including P/E, EV/EBITDA, and ROIC'.",
+  "[PUBLIC MARKET INTELLIGENCE] Specialized agent for public companies' financial statement analysis and financial ratio calculations. Capabilities: Analyze financial statements including income statements, balance sheets, cash flow statements, product segments, geographic segments, calculate financial metrics, growth rates, compare ratios across companies, and evaluate performance indicators and operational efficiency. Best for: Deep financial analysis and comparison of company financial performance. Example queries: 'Compare the gross margins, operating margins, and net margins of Apple, Microsoft, and Google over the last 3 years', 'Analyze Tesla's cash flow statements from 2021 to 2023 and calculate free cash flow trends', 'Show me Amazon's capex to operating cash flow ratio for the past 3 years','What is NVDA's cash conversion cycle trend over the past 8 quarters?'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
@@ -558,46 +558,6 @@ server.tool(
           {
             type: "text",
             text: `Error: Failed to process private debts query. ${error}`,
-          },
-        ],
-      };
-    }
-  }
-);
-
-// Metrics Agent
-server.tool(
-  "octagon-metrics-agent",
-  "[PUBLIC MARKET INTELLIGENCE] Specialized agent for analyzing financial ratios and key metrics of public companies. Capabilities: Calculate and analyze financial ratios, track key performance metrics over time, compare metrics across companies and sectors, evaluate company performance through various financial lenses. Best for: Detailed ratio analysis, historical metric trends, cross-company comparisons, valuation analysis, operational efficiency evaluation. Example queries: 'Get historical quarterly EV/S for $TSLA for the last 20 quarters', 'Compare operating margins and ROIC for AAPL, MSFT, and GOOGL', 'What is NVDA's cash conversion cycle trend over the past 8 quarters?', 'Calculate the Graham Number for META and compare it to current price', 'Show me Amazon's capex to operating cash flow ratio for the past 3 years'.",
-  {
-    prompt: z.string().describe("Your natural language query or request for the agent"),
-  },
-  async ({ prompt }: PromptParams) => {
-    try {
-      const response = await octagonClient.chat.completions.create({
-        model: "octagon-metrics-agent",
-        messages: [{ role: "user", content: prompt }],
-        stream: true,
-        metadata: { tool: "mcp" }
-      });
-
-      const result = await processStreamingResponse(response);
-      return {
-        content: [
-          {
-            type: "text",
-            text: result,
-          },
-        ],
-      };
-    } catch (error) {
-      console.error("Error calling Metrics agent:", error);
-      return {
-        isError: true,
-        content: [
-          {
-            type: "text",
-            text: `Error: Failed to process metrics query. ${error}`,
           },
         ],
       };
