@@ -565,6 +565,46 @@ server.tool(
   }
 );
 
+// Holdings Agent
+server.tool(
+  "octagon-holdings-agent",
+  "[PUBLIC MARKET INTELLIGENCE] Specialized agent for institutional ownership and holdings data, providing comprehensive insights into Form 13F filings, institutional investor activity, fund performance, and industry-level holdings analytics. Capabilities: Retrieve the latest Form 13F and related institutional ownership filings; Analyze institutional holder filings for specific securities and periods; Summarize performance of institutional holders (funds, asset managers); Break down institutional portfolios by industry/sector; Summarize institutional positions for a given security; Benchmark industry performance based on institutional holdings. Use Cases: Tracking institutional buying and selling activity for specific stocks; Analyzing fund manager performance and portfolio allocation; Benchmarking industry and sector performance based on institutional holdings; Identifying new or exited positions by major funds; Understanding industry exposure and concentration in institutional portfolios. Example queries: '@octagon-holdings-agent Retrieve the most recent Form 13F and related filings submitted by institutional investors, limited to 50 records on page 0.'; '@octagon-holdings-agent Retrieve analytics for institutional holder filings for AAPL in Q2 of 2023, limited to 20 records on page 0.'; '@octagon-holdings-agent Get a summary of the performance of the institutional holder with CIK 0001166559.'; '@octagon-holdings-agent Retrieve the industry breakdown for the holder with CIK 0001067983 for Q4 of 2024.'; '@octagon-holdings-agent Get a summary of institutional positions for AAPL for Q4 of 2024.'; '@octagon-holdings-agent Get a financial performance summary for all industries for Q4 of 2024.'",
+  {
+    prompt: z.string().describe("Your natural language query or request for the agent"),
+  },
+  async ({ prompt }: PromptParams) => {
+    try {
+      const response = await octagonClient.chat.completions.create({
+        model: "octagon-holdings-agent",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+        metadata: { tool: "mcp" }
+      });
+
+      const result = await processStreamingResponse(response);
+      return {
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error calling Holdings agent:", error);
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: Failed to process holdings query. ${error}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 // Start the server with stdio transport
 async function main() {
   try {
