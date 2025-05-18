@@ -73,16 +73,6 @@ If you see version numbers for all three, you are ready to proceed with the inst
 
 ## Installation
 
-
-
-## Running evals
-
-The evals package loads an mcp client that then runs the index.ts file, so there is no need to rebuild between tests. You can load environment variables by prefixing the npx command. Full documentation can be found [here](https://www.mcpevals.io/docs).
-
-```bash
-OPENAI_API_KEY=your-key  npx mcp-eval src/evals/evals.ts src/index.ts
-```
-
 ### Running on Claude Desktop
 
 To configure Octagon MCP for Claude Desktop:
@@ -284,6 +274,14 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 1. **API Key Issues**: Ensure your Octagon API key is correctly set in the environment or config file.
 2. **Connection Issues**: Make sure the connectivity to the Octagon API is working properly.
 3. **Rate Limiting**: If you encounter rate limiting errors, reduce the frequency of your requests.
+
+## Running Evals
+
+The evals package loads an mcp client that then runs the index.ts file, so there is no need to rebuild between tests. You can load environment variables by prefixing the npx command. Full documentation can be found [here](https://www.mcpevals.io/docs).
+
+```bash
+OPENAI_API_KEY=your-key  npx mcp-eval src/evals/evals.ts src/index.ts
+```
 
 ## Installation
 
