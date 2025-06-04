@@ -88,7 +88,7 @@ type PromptParams = {
 // SEC Filings Agent
 server.tool(
   "octagon-sec-agent",
-  "[PUBLIC MARKET INTELLIGENCE] A specialized agent for SEC filings analysis and extraction. Covers over 8,000 public companies from SEC EDGAR with comprehensive coverage of annual and quarterly reports (10-K, 10-Q, 20-F), offering filings (S-1), amendments, and event filings (8-K). Updated daily with historical data dating back to 2018 for time-series analysis. Best for extracting management discussion, footnotes, risk factors, and quantitative data from SEC filings. Example queries:'Find the risk factors related to supply chain in Tesla's latest 10-K', 'List every material weakness in internal control that Salesforce disclosed between 2020 and 2024.', 'Compare executive compensation (total, cash, equity) for Amazon, Walmart, and Target in 2023'
+  "[PUBLIC MARKET INTELLIGENCE] A specialized agent for SEC filings analysis and extraction. Covers over 8,000 public companies from SEC EDGAR with comprehensive coverage of annual and quarterly reports (10-K, 10-Q, 20-F), offering filings (S-1), amendments, and event filings (8-K). Updated daily with historical data dating back to 2018 for time-series analysis. Best for extracting management discussion, footnotes, risk factors, and quantitative data from SEC filings. Example queries:'Find the risk factors related to supply chain in Tesla's latest 10-K', 'List every material weakness in internal control that Salesforce disclosed between 2020 and 2024.', 'Compare executive compensation (total, cash, equity) for Amazon, Walmart, and Target in 2023'.",
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
