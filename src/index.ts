@@ -605,6 +605,46 @@ server.tool(
   }
 );
 
+// Comprehensive Orchestration Agent
+server.tool(
+  "octagon-agent",
+  "[COMPREHENSIVE MARKET INTELLIGENCE] Orchestrates all agents for comprehensive market intelligence analysis. Capabilities: Combines insights from SEC filings, earnings calls, financial metrics, stock data, institutional holdings, private company research, funding analysis, M&A transactions, investor intelligence, and debt analysis to provide holistic market intelligence. Best for: Complex research requiring multiple data sources and comprehensive analysis across public and private markets. Example queries: 'Retrieve year-over-year growth in key income-statement items for AAPL, limited to 5 records and filtered by period FY', 'Analyze the latest 10-K filing for AAPL and extract key financial metrics and risk factors', 'Retrieve the daily closing prices for AAPL over the last 30 days', 'Analyze AAPL's latest earnings call transcript and extract key insights about future guidance', 'Provide a comprehensive overview of Stripe, including its business model and key metrics', 'Retrieve the funding history for Stripe, including all rounds and investors'.",
+  {
+    prompt: z.string().describe("Your natural language query or request for the agent"),
+  },
+  async ({ prompt }: PromptParams) => {
+    try {
+      const response = await octagonClient.chat.completions.create({
+        model: "octagon-agent",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+        metadata: { tool: "mcp" }
+      });
+
+      const result = await processStreamingResponse(response);
+      return {
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error calling Octagon orchestration agent:", error);
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: Failed to process comprehensive market intelligence query. ${error}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 // Start the server with stdio transport
 async function main() {
   try {

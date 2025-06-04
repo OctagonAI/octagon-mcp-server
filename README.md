@@ -164,6 +164,25 @@ The documentation includes:
 
 Each tool uses a single `prompt` parameter that accepts a natural language query. Include all relevant details in your prompt.
 
+### Comprehensive Market Intelligence
+
+#### octagon-agent
+Orchestrates all agents for comprehensive market intelligence analysis. Combines insights from SEC filings, earnings calls, financial metrics, stock data, institutional holdings, private company research, funding analysis, M&A transactions, investor intelligence, and debt analysis.
+
+Example queries:
+```
+Retrieve year-over-year growth in key income-statement items for AAPL, limited to 5 records and filtered by period FY
+Analyze the latest 10-K filing for AAPL and extract key financial metrics and risk factors
+Retrieve the daily closing prices for AAPL over the last 30 days
+Analyze AAPL's latest earnings call transcript and extract key insights about future guidance
+Provide a comprehensive overview of Stripe, including its business model and key metrics
+Retrieve the funding history for Stripe, including all rounds and investors
+List all M&A transactions involving Stripe in the last 2 years
+Provide a detailed profile of Sequoia Capital's investment strategy and portfolio
+Analyze Stripe's debt financing history and current debt structure
+Retrieve the most recent Form 13F and related filings submitted by institutional investors
+```
+
 ### Public Market Intelligence
 
 #### octagon-sec-agent
@@ -183,7 +202,7 @@ What did NVIDIA's CEO say about AI chip demand in their latest earnings call?
 ```
 
 #### octagon-financials-agent
-Retrieve financial metrics and ratios.
+Retrieve financial metrics and ratios. (Now also supports analysts' financial estimates.)
 
 Example:
 ```
@@ -196,6 +215,27 @@ Access stock market data.
 Example:
 ```
 How has Apple's stock performed compared to the S&P 500 over the last 6 months?
+```
+
+#### octagon-holdings-agent
+Analyze institutional ownership, Form 13F filings, and fund holdings data.
+
+Capabilities:
+- Retrieve the latest Form 13F and related institutional ownership filings
+- Analyze institutional holder filings for specific securities and periods
+- Summarize performance of institutional holders (funds, asset managers)
+- Break down institutional portfolios by industry/sector
+- Summarize institutional positions for a given security
+- Benchmark industry performance based on institutional holdings
+
+Example queries:
+```
+@octagon-holdings-agent Retrieve the most recent Form 13F and related filings submitted by institutional investors, limited to 50 records on page 0.
+@octagon-holdings-agent Retrieve analytics for institutional holder filings for AAPL in Q2 of 2023, limited to 20 records on page 0.
+@octagon-holdings-agent Get a summary of the performance of the institutional holder with CIK 0001166559.
+@octagon-holdings-agent Retrieve the industry breakdown for the holder with CIK 0001067983 for Q4 of 2024.
+@octagon-holdings-agent Get a summary of institutional positions for AAPL for Q4 of 2024.
+@octagon-holdings-agent Get a financial performance summary for all industries for Q4 of 2024.
 ```
 
 ### Private Market Intelligence
