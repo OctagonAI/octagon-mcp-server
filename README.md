@@ -13,6 +13,7 @@
    - Earnings call transcript analysis (10 yrs of historical and current)
    - Financial metrics and ratios analysis (10 yrs of historical and current)
    - Stock market data access (over 10,000 active tickers, daily historical and current)
+   - Cryptocurrency market data and analysis (comprehensive crypto listings, historical prices, real-time quotes)
      
 ✅ Specialized AI agents for **private market data**
    - Private company research (3M+ companies)
@@ -238,6 +239,25 @@ Example queries:
 @octagon-holdings-agent Get a financial performance summary for all industries for Q4 of 2024.
 ```
 
+#### octagon-crypto-agent
+Analyze cryptocurrency market data and trends.
+
+Capabilities:
+- Retrieve comprehensive cryptocurrency listings from global exchanges
+- Access historical price data and end-of-day charts
+- Get real-time quotes and live price snapshots
+- Search cryptocurrency news articles
+- Analyze crypto market trends
+
+Example queries:
+```
+Get a comprehensive list of all cryptocurrencies traded on global exchanges
+Retrieve historical end-of-day price data for BTCUSD from 2020-01-01 to 2024-12-31
+Retrieve the real-time quote for ETHUSD
+Retrieve a short live price snapshot for many cryptocurrencies
+Search news articles for BTCUSD, ETHUSD from 2025-01-01 to 2025-06-13, limited to 20 results on page 0
+```
+
 ### Private Market Intelligence
 
 #### octagon-companies-agent
@@ -309,6 +329,7 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 7. "Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins"
 8. "Compile all the debt activities from lender ING Group in Q4 2024"
 9. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
+10. "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
 
 ## Troubleshooting
 
@@ -333,6 +354,25 @@ npm install -g octagon-mcp
 ## License
 
 MIT 
+
+## Individual Specialized MCP Servers
+
+While this server provides comprehensive market intelligence combining all our specialized agents, you can also use our individual MCP servers for specific use cases:
+
+### Public Market Data Servers
+- **[Octagon SEC Filings MCP](https://github.com/OctagonAI/octagon-sec-filings-mcp)** - Dedicated server for SEC filings analysis
+- **[Octagon Earnings Transcripts MCP](https://github.com/OctagonAI/octagon-earnings-transcripts-mcp)** - Specialized for earnings call transcript analysis
+- **[Octagon Stock Market Data MCP](https://github.com/OctagonAI/octagon-stock-market-data-mcp)** - Focused on stock market data access
+- **[Octagon Financial Statements MCP](https://github.com/OctagonAI/octagon-financial-statements-mcp)** - Financial metrics and ratios analysis
+- **[Octagon 13F Holdings MCP](https://github.com/OctagonAI/octagon-13f-holdings-mcp)** - Institutional ownership and Form 13F filings
+
+### Private Market Data Servers
+- **[Octagon Private Companies MCP](https://github.com/OctagonAI/octagon-private-companies-mcp)** - Private company research and intelligence
+- **[Octagon Investors MCP](https://github.com/OctagonAI/octagon-investors-mcp)** - Investor profiles and investment strategies
+- **[Octagon Funding Data MCP](https://github.com/OctagonAI/octagon-funding-data-mcp)** - Startup funding rounds and venture capital data
+
+### Research Tools
+- **[Octagon Deep Research MCP](https://github.com/OctagonAI/octagon-deep-research-mcp)** - Comprehensive research and web scraping capabilities
 
 ---
 
