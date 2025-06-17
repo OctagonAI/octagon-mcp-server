@@ -645,6 +645,46 @@ server.tool(
   }
 );
 
+// Crypto Agent
+server.tool(
+  "octagon-crypto-agent",
+  "[PUBLIC MARKET INTELLIGENCE] Specialized agent for cryptocurrency market data and analysis. Capabilities: Retrieve comprehensive cryptocurrency listings from global exchanges, access historical price data and end-of-day charts, get real-time quotes and live price snapshots, search cryptocurrency news articles, and analyze crypto market trends. Best for: Cryptocurrency research, price analysis, market monitoring, and staying updated with crypto news. Example queries: 'Get a comprehensive list of all cryptocurrencies traded on global exchanges', 'Retrieve historical end-of-day price data for BTCUSD from 2020-01-01 to 2024-12-31', 'Retrieve the real-time quote for ETHUSD', 'Retrieve a short live price snapshot for many cryptocurrencies', 'Search news articles for BTCUSD, ETHUSD from 2025-01-01 to 2025-06-13, limited to 20 results on page 0'.",
+  {
+    prompt: z.string().describe("Your natural language query or request for the agent"),
+  },
+  async ({ prompt }: PromptParams) => {
+    try {
+      const response = await octagonClient.chat.completions.create({
+        model: "octagon-crypto-agent",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+        metadata: { tool: "mcp" }
+      });
+
+      const result = await processStreamingResponse(response);
+      return {
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error calling Crypto agent:", error);
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: Failed to process cryptocurrency query. ${error}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 // Start the server with stdio transport
 async function main() {
   try {
