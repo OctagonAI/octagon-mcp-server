@@ -8,22 +8,20 @@
 
 ## Features
 
-✅ Specialized AI agents for **public market data**
+✅ **Comprehensive Market Intelligence** - Orchestrates multiple specialized agents for complete market analysis
    - SEC filings analysis and data extraction (8000+ public companies 10-K, 10-Q, 8-K, 20-F, S-1)
    - Earnings call transcript analysis (10 yrs of historical and current)
    - Financial metrics and ratios analysis (10 yrs of historical and current)
    - Stock market data access (over 10,000 active tickers, daily historical and current)
-   - Cryptocurrency market data and analysis (comprehensive crypto listings, historical prices, real-time quotes)
-     
-✅ Specialized AI agents for **private market data**
    - Private company research (3M+ companies)
    - Funding rounds and venture capital research (500k+ deals)
    - M&A and IPO transaction research (2M+ deals)
-   - Debt transactions research (1M+ deals)
+   - Institutional holdings and Form 13F filings
+   - Cryptocurrency market data and analysis
      
-✅ Specialized AI agents for **deep research**
-   - Web scraping capabilities (json, csv, python scripts)
-   - Comprehensive deep research tools
+✅ **Deep Research Capabilities** - Comprehensive research tools that can aggregate information from multiple sources
+   
+✅ **Web Scraping** - Extract structured data from any public website (json, csv, python scripts)
 
 ## Get Your Octagon API Key
 
@@ -74,7 +72,6 @@ If you see version numbers for all three, you are ready to proceed with the inst
 
 ## Installation
 
-
 ### Running on Claude Desktop
 
 To configure Octagon MCP for Claude Desktop:
@@ -117,8 +114,6 @@ To configure Octagon MCP in Cursor:
 Replace `your-octagon-api-key` with your Octagon API key.
 
 After adding, refresh the MCP server list to see the new tools. The Composer Agent will automatically use Octagon MCP when appropriate, but you can explicitly request it by describing your investment research needs. Access the Composer via Command+L (Mac), select "Agent" next to the submit button, and enter your query.
-
-
 
 ### Running on Windsurf
 
@@ -165,12 +160,12 @@ The documentation includes:
 
 Each tool uses a single `prompt` parameter that accepts a natural language query. Include all relevant details in your prompt.
 
-### Comprehensive Market Intelligence
+### octagon-agent
+**[COMPREHENSIVE MARKET INTELLIGENCE]** Orchestrates all agents for comprehensive market intelligence analysis. Combines insights from SEC filings, earnings calls, financial metrics, stock data, institutional holdings, private company research, funding analysis, M&A transactions, investor intelligence, and debt analysis.
 
-#### octagon-agent
-Orchestrates all agents for comprehensive market intelligence analysis. Combines insights from SEC filings, earnings calls, financial metrics, stock data, institutional holdings, private company research, funding analysis, M&A transactions, investor intelligence, and debt analysis.
+**Best for:** Complex research requiring multiple data sources and comprehensive analysis across public and private markets.
 
-Example queries:
+**Example queries:**
 ```
 Retrieve year-over-year growth in key income-statement items for AAPL, limited to 5 records and filtered by period FY
 Analyze the latest 10-K filing for AAPL and extract key financial metrics and risk factors
@@ -178,144 +173,36 @@ Retrieve the daily closing prices for AAPL over the last 30 days
 Analyze AAPL's latest earnings call transcript and extract key insights about future guidance
 Provide a comprehensive overview of Stripe, including its business model and key metrics
 Retrieve the funding history for Stripe, including all rounds and investors
-List all M&A transactions involving Stripe in the last 2 years
-Provide a detailed profile of Sequoia Capital's investment strategy and portfolio
-Analyze Stripe's debt financing history and current debt structure
-Retrieve the most recent Form 13F and related filings submitted by institutional investors
+Compare the financial performance of Tesla, Ford, and GM over the last 3 years
+What was Microsoft's acquisition of GitHub valued at and what were the strategic reasons?
+Analyze institutional ownership changes for NVIDIA over the past 6 months
 ```
 
-### Public Market Intelligence
+### octagon-scraper-agent
+**[PUBLIC & PRIVATE MARKET INTELLIGENCE]** Specialized agent for financial data extraction from investor websites. Extract structured financial data from investor relations websites, tables, and online financial sources.
 
-#### octagon-sec-agent
-Extract information from SEC filings.
+**Best for:** Gathering financial data from websites that don't have accessible APIs.
 
-Example:
+**Example queries:**
 ```
-What was Apple's gross margin percentage from their latest 10-Q filing?
-```
-
-#### octagon-transcripts-agent
-Analyze earnings call transcripts.
-
-Example:
-```
-What did NVIDIA's CEO say about AI chip demand in their latest earnings call?
+Extract all data fields from zillow.com/san-francisco-ca/
+Extract all data fields from www.carvana.com/cars/
+Extract financial metrics from tesla.com/investor-relations
+Extract pricing data from salesforce.com/products/platform/pricing/
 ```
 
-#### octagon-financials-agent
-Retrieve financial metrics and ratios. (Now also supports analysts' financial estimates.)
+### octagon-deep-research-agent
+**[PUBLIC & PRIVATE MARKET INTELLIGENCE]** A comprehensive agent that can utilize multiple sources for deep research analysis. Aggregate research across multiple data sources, synthesize information, and provide comprehensive investment research.
 
-Example:
-```
-Calculate the price-to-earnings ratio for Tesla over the last 4 quarters
-```
+**Best for:** Investment research questions requiring up-to-date aggregated information from the web.
 
-#### octagon-stock-data-agent
-Access stock market data.
-
-Example:
-```
-How has Apple's stock performed compared to the S&P 500 over the last 6 months?
-```
-
-#### octagon-holdings-agent
-Analyze institutional ownership, Form 13F filings, and fund holdings data.
-
-Capabilities:
-- Retrieve the latest Form 13F and related institutional ownership filings
-- Analyze institutional holder filings for specific securities and periods
-- Summarize performance of institutional holders (funds, asset managers)
-- Break down institutional portfolios by industry/sector
-- Summarize institutional positions for a given security
-- Benchmark industry performance based on institutional holdings
-
-Example queries:
-```
-@octagon-holdings-agent Retrieve the most recent Form 13F and related filings submitted by institutional investors, limited to 50 records on page 0.
-@octagon-holdings-agent Retrieve analytics for institutional holder filings for AAPL in Q2 of 2023, limited to 20 records on page 0.
-@octagon-holdings-agent Get a summary of the performance of the institutional holder with CIK 0001166559.
-@octagon-holdings-agent Retrieve the industry breakdown for the holder with CIK 0001067983 for Q4 of 2024.
-@octagon-holdings-agent Get a summary of institutional positions for AAPL for Q4 of 2024.
-@octagon-holdings-agent Get a financial performance summary for all industries for Q4 of 2024.
-```
-
-#### octagon-crypto-agent
-Analyze cryptocurrency market data and trends.
-
-Capabilities:
-- Retrieve comprehensive cryptocurrency listings from global exchanges
-- Access historical price data and end-of-day charts
-- Get real-time quotes and live price snapshots
-- Search cryptocurrency news articles
-- Analyze crypto market trends
-
-Example queries:
-```
-Get a comprehensive list of all cryptocurrencies traded on global exchanges
-Retrieve historical end-of-day price data for BTCUSD from 2020-01-01 to 2024-12-31
-Retrieve the real-time quote for ETHUSD
-Retrieve a short live price snapshot for many cryptocurrencies
-Search news articles for BTCUSD, ETHUSD from 2025-01-01 to 2025-06-13, limited to 20 results on page 0
-```
-
-### Private Market Intelligence
-
-#### octagon-companies-agent
-Research private company information.
-
-Example:
-```
-What is the employee count and funding history for Anthropic?
-```
-
-#### octagon-funding-agent
-Research startup funding rounds and venture capital.
-
-Example:
-```
-What was OpenAI's latest funding round size, valuation, and key investors?
-```
-
-#### octagon-deals-agent
-Research M&A and IPO transactions.
-
-Example:
-```
-What was the acquisition price when Microsoft acquired GitHub?
-```
-
-#### octagon-investors-agent
-A specialized database agent for looking up information on investors.
-
-Example:
-```
-What is the latest investment criteria of Insight Partners?
-```
-
-#### octagon-debts-agent
-A specialized database agent for analyzing private debts, borrowers, and lenders.
-
-Example:
-```
-List all the debt activities from borrower American Tower
-```
-
-### Additional Tools
-
-#### octagon-scraper-agent
-Extract data from any public website.
-
-Example:
-```
-Extract property prices and square footage data from zillow.com/san-francisco-ca/
-```
-
-#### octagon-deep-research-agent
-Perform comprehensive research on any topic.
-
-Example:
+**Example queries:**
 ```
 Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins
+Analyze the competitive landscape in the cloud computing sector, focusing on AWS, Azure, and Google Cloud margin and growth trends
+Investigate the factors driving electric vehicle adoption and their impact on battery supplier financials
+Research the impact of AI adoption on semiconductor demand and pricing trends
+Analyze the regulatory environment for cryptocurrency and its impact on crypto exchange valuations
 ```
 
 ## Example Queries
@@ -327,29 +214,15 @@ Research the financial impact of Apple's privacy changes on digital advertising 
 5. "What was Anthropic's latest funding round size, valuation, and key investors?"
 6. "Extract all data fields from zillow.com/san-francisco-ca/"
 7. "Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins"
-8. "Compile all the debt activities from lender ING Group in Q4 2024"
-9. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
-10. "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
+8. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
+9. "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
+10. "Analyze the competitive dynamics in the EV charging infrastructure market"
 
 ## Troubleshooting
 
 1. **API Key Issues**: Ensure your Octagon API key is correctly set in the environment or config file.
 2. **Connection Issues**: Make sure the connectivity to the Octagon API is working properly.
 3. **Rate Limiting**: If you encounter rate limiting errors, reduce the frequency of your requests.
-
-## Installation
-
-### Running with npx
-
-```bash
-env OCTAGON_API_KEY=your_octagon_api_key npx -y octagon-mcp
-```
-
-### Manual Installation
-
-```bash
-npm install -g octagon-mcp
-```
 
 ## License
 

@@ -25,29 +25,41 @@ async function main() {
       console.log(`- ${tool.name}: ${tool.description}`);
     }
 
-    // Example: Query SEC filings
-    console.log("\nQuerying SEC filings for Apple's revenue...");
-    const secResult = await client.callTool({
-      name: "octagon-sec-agent",
+    // Example: Query comprehensive market intelligence
+    console.log("\nQuerying comprehensive market intelligence for Apple...");
+    const marketResult = await client.callTool({
+      name: "octagon-agent",
       arguments: {
-        prompt: "What was Apple's revenue in the latest quarter according to their 10-Q filing?",
+        prompt: "Analyze Apple's latest 10-K filing and extract key financial metrics and risk factors",
       },
     });
 
-    console.log("SEC Filing Result:");
-    console.log(secResult.content[0].text);
+    console.log("Market Intelligence Result:");
+    console.log((marketResult as any).content[0].text);
 
-    // Example: Analyze earnings call
-    console.log("\nAnalyzing earnings call for Microsoft...");
-    const earningsResult = await client.callTool({
-      name: "octagon-transcripts-agent",
+    // Example: Deep research analysis
+    console.log("\nPerforming deep research on AI market trends...");
+    const researchResult = await client.callTool({
+      name: "octagon-deep-research-agent",
       arguments: {
-        prompt: "What did Microsoft's CEO say about AI initiatives in their latest earnings call?",
+        prompt: "Research the financial impact of AI adoption on semiconductor companies' revenue and margins",
       },
     });
 
-    console.log("Earnings Call Analysis:");
-    console.log(earningsResult.content[0].text);
+    console.log("Deep Research Analysis:");
+    console.log((researchResult as any).content[0].text);
+
+    // Example: Web scraping
+    console.log("\nExtracting data from a website...");
+    const scrapingResult = await client.callTool({
+      name: "octagon-scraper-agent",
+      arguments: {
+        prompt: "Extract all data fields from zillow.com/san-francisco-ca/",
+      },
+    });
+
+    console.log("Web Scraping Result:");
+    console.log((scrapingResult as any).content[0].text);
 
     // Close the client
     await client.close();
