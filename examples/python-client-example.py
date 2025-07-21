@@ -26,27 +26,38 @@ async def main():
             for tool in tools.tools:
                 print(f"- {tool.name}: {tool.description}")
 
-            # Example: Query SEC filings
-            print("\nQuerying SEC filings for Apple's revenue...")
-            sec_result = await session.call_tool(
-                "octagon-sec-agent", 
+            # Example: Query comprehensive market intelligence
+            print("\nQuerying comprehensive market intelligence for Apple...")
+            market_result = await session.call_tool(
+                "octagon-agent", 
                 arguments={
-                    "prompt": "What was Apple's revenue in the latest quarter according to their 10-Q filing?"
+                    "prompt": "Analyze Apple's latest 10-K filing and extract key financial metrics and risk factors"
                 }
             )
-            print("SEC Filing Result:")
-            print(sec_result.content[0].text)
+            print("Market Intelligence Result:")
+            print(market_result.content[0].text)
 
-            # Example: Analyze earnings call
-            print("\nAnalyzing earnings call for Microsoft...")
-            earnings_result = await session.call_tool(
-                "octagon-transcripts-agent",
+            # Example: Deep research analysis
+            print("\nPerforming deep research on AI market trends...")
+            research_result = await session.call_tool(
+                "octagon-deep-research-agent",
                 arguments={
-                    "prompt": "What did Microsoft's CEO say about AI initiatives in their latest earnings call?"
+                    "prompt": "Research the financial impact of AI adoption on semiconductor companies' revenue and margins"
                 }
             )
-            print("Earnings Call Analysis:")
-            print(earnings_result.content[0].text)
+            print("Deep Research Analysis:")
+            print(research_result.content[0].text)
+
+            # Example: Web scraping
+            print("\nExtracting data from a website...")
+            scraping_result = await session.call_tool(
+                "octagon-scraper-agent",
+                arguments={
+                    "prompt": "Extract all data fields from zillow.com/san-francisco-ca/"
+                }
+            )
+            print("Web Scraping Result:")
+            print(scraping_result.content[0].text)
 
 if __name__ == "__main__":
     asyncio.run(main()) 
