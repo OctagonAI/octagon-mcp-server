@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/octagonai-octagon-mcp-server-badge.png)](https://mseep.ai/app/octagonai-octagon-mcp-server)
+
 # Octagon: MCP for Market Data 
 
 [![smithery badge](https://smithery.ai/badge/@OctagonAI/octagon-mcp-server)](https://smithery.ai/server/@OctagonAI/octagon-mcp-server)
