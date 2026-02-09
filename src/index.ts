@@ -39,15 +39,10 @@ const octagonClient = new OpenAI({
 });
 
 // Create MCP server
-const server = new McpServer(
-  {
-    name: packageInfo.name,
-    version: packageInfo.version,
-  },
-  {
-    capabilities: { logging: {} },
-  }
-);
+const server = new McpServer({
+  name: packageInfo.name,
+  version: packageInfo.version,
+});
 
 // Helper function to process streaming responses
 async function processStreamingResponse(stream: any): Promise<string> {
@@ -80,34 +75,6 @@ async function processStreamingResponse(stream: any): Promise<string> {
   }
 }
 
-interface HeartbeatContext {
-  sendLog: (message: string) => Promise<void>;
-  sendProgress?: (progress: number, total: number, message: string) => Promise<void>;
-}
-
-const SPINNER_FRAMES = ["|", "/", "-", "\\"];
-
-function startHeartbeat(ctx: HeartbeatContext): () => void {
-  let tick = 0;
-  const startTime = Date.now();
-  const interval = setInterval(async () => {
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    const frame = SPINNER_FRAMES[tick % SPINNER_FRAMES.length];
-    const message = `${frame} Processing... (${elapsed}s)`;
-    try {
-      await ctx.sendLog(message);
-      if (ctx.sendProgress) {
-        await ctx.sendProgress(elapsed, 0, message);
-      }
-    } catch {
-      // swallow — transport may have closed
-    }
-    tick++;
-  }, 5000);
-
-  return () => clearInterval(interval);
-}
-
 // Define a schema for the 'prompt' parameter that all tools will use
 const promptSchema = z.object({
   prompt: z.string().describe("Your natural language query or request for the agent"),
@@ -124,11 +91,7 @@ server.tool(
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }: PromptParams, _extra) => {
-    const sendLog = (message: string) =>
-      server.server.sendLoggingMessage({ level: "info", data: message });
-
-    const stopHeartbeat = startHeartbeat({ sendLog });
+  async ({ prompt }: PromptParams) => {
     try {
       const response = await octagonClient.chat.completions.create({
         model: "octagon-agent",
@@ -141,7 +104,7 @@ server.tool(
       return {
         content: [
           {
-            type: "text" as const,
+            type: "text",
             text: result,
           },
         ],
@@ -152,13 +115,11 @@ server.tool(
         isError: true,
         content: [
           {
-            type: "text" as const,
+            type: "text",
             text: `Error: Failed to process comprehensive market intelligence query. ${error}`,
           },
         ],
       };
-    } finally {
-      stopHeartbeat();
     }
   }
 );
@@ -170,11 +131,7 @@ server.tool(
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }: PromptParams, _extra) => {
-    const sendLog = (message: string) =>
-      server.server.sendLoggingMessage({ level: "info", data: message });
-
-    const stopHeartbeat = startHeartbeat({ sendLog });
+  async ({ prompt }: PromptParams) => {
     try {
       const response = await octagonClient.chat.completions.create({
         model: "octagon-scraper-agent",
@@ -187,7 +144,7 @@ server.tool(
       return {
         content: [
           {
-            type: "text" as const,
+            type: "text",
             text: result,
           },
         ],
@@ -198,13 +155,11 @@ server.tool(
         isError: true,
         content: [
           {
-            type: "text" as const,
+            type: "text",
             text: `Error: Failed to process web scraping query. ${error}`,
           },
         ],
       };
-    } finally {
-      stopHeartbeat();
     }
   }
 );
@@ -216,11 +171,7 @@ server.tool(
   {
     prompt: z.string().describe("Your natural language query or request for the agent"),
   },
-  async ({ prompt }: PromptParams, _extra) => {
-    const sendLog = (message: string) =>
-      server.server.sendLoggingMessage({ level: "info", data: message });
-
-    const stopHeartbeat = startHeartbeat({ sendLog });
+  async ({ prompt }: PromptParams) => {
     try {
       const response = await octagonClient.chat.completions.create({
         model: "octagon-deep-research-agent",
@@ -233,7 +184,7 @@ server.tool(
       return {
         content: [
           {
-            type: "text" as const,
+            type: "text",
             text: result,
           },
         ],
@@ -244,13 +195,11 @@ server.tool(
         isError: true,
         content: [
           {
-            type: "text" as const,
+            type: "text",
             text: `Error: Failed to process deep research query. ${error}`,
           },
         ],
       };
-    } finally {
-      stopHeartbeat();
     }
   }
 );
