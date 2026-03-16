@@ -4,6 +4,20 @@
   "description": "MCP server for Octagon API. Provides specialized AI agents for investment research of public and private markets.",
   "main": "dist/index.js",
   "type": "module",
+  "imports": {
+    "#client": {
+      "types": "./src/client.ts",
+      "default": "./dist/client.js"
+    },
+    "#tools": {
+      "types": "./src/tools/index.ts",
+      "default": "./dist/tools/index.js"
+    },
+    "#tools/*": {
+      "types": "./src/tools/*.ts",
+      "default": "./dist/tools/*.js"
+    }
+  },
   "bin": {
     "octagon-mcp": "dist/index.js"
   },
