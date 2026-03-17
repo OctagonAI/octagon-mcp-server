@@ -36,7 +36,7 @@ export function registerTool(server: McpServer, client: OpenAI): void {
           content: [
             {
               type: "text",
-              text: `Error: Failed to process Octagon agent query. ${error}`,
+              text: "Error: Failed to process Octagon agent query.",
             },
           ],
         };

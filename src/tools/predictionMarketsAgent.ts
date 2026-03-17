@@ -48,7 +48,7 @@ export function registerTool(server: McpServer, client: OpenAI): void {
           content: [
             {
               type: "text",
-              text: `Error: Failed to process ${model} query. ${error}`,
+              text: "Error: Failed to process prediction markets query.",
             },
           ],
         };

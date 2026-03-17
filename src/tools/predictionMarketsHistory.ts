@@ -9,8 +9,6 @@ Supports pagination (limit, cursor) and time window (captured_from, captured_to)
 Note: For a typical Kalshi Market URL, the event ticker is the final segment in the URL.
 For example, for the URL https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100, the event ticker is kxbtcy-27jan0100.`;
 
-const CASE_INSENSITIVE_EVENT_TICKER_REGEX = /^[a-z0-9-]+$/i;
-
 const INPUT_SCHEMA = {
   event_ticker: z
     .string()
@@ -48,8 +46,6 @@ type Params = {
   include_analysis: boolean | undefined;
 };
 
-class ValidationError extends Error {}
-
 export function registerTool(server: McpServer, client: OpenAI): void {
   (server as any).tool(
     TOOL_NAME,
@@ -85,11 +81,6 @@ export function registerTool(server: McpServer, client: OpenAI): void {
 
         let errorMessage = (error as Error).message ?? String(error);
         let errorCode = "unknown";
-
-        if (error instanceof ValidationError) {
-          errorMessage = error.message;
-          errorCode = "validation_error";
-        }
 
         if (error instanceof APIError) {
           const err = error.error as { message?: string } | undefined;
