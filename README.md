@@ -165,6 +165,15 @@ Example:
 Compare NVIDIA and AMD on latest quarterly revenue growth, margins, and management commentary.
 ```
 
+More examples:
+
+- "What were Amazon's revenue and net income figures in Q4 2023?"
+- "Analyze Tesla's R&D spending trends over the last 3 years."
+- "What guidance did NVIDIA's CEO provide regarding AI chip demand in their latest earnings call?"
+- "Compare the price-to-earnings, price-to-sales, and EV/EBITDA ratios for the top 5 semiconductor companies."
+- "What was Anthropic's latest funding round size, valuation, and key investors?"
+- "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
+
 ### `octagon-deep-research-agent`
 
 Performs comprehensive multi-source deep research and synthesis.
@@ -178,6 +187,13 @@ Example:
 ```
 Research the impact of lower interest rates on late-stage private software valuations over the next 12 months.
 ```
+
+More examples:
+
+- "Extract all data fields from zillow.com/san-francisco-ca/"
+- "Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins"
+- "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
+- "Analyze the competitive dynamics in the EV charging infrastructure market"
 
 ### `prediction-markets-agent`
 
@@ -193,8 +209,8 @@ Generates research reports for Kalshi prediction market events.
 
 Example:
 
-```
-Analyze key drivers for KXBTCY-27JAN0100 and compare market-implied probability to your model estimate.
+```text
+Generate a report for the Kalshi market https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100
 ```
 
 ### `prediction_markets_history`
@@ -212,30 +228,9 @@ Fetches historical data for a prediction market event ticker with optional pagin
 
 Example:
 
-```json
-{
-  "event_ticker": "KXBTCY-27JAN0100",
-  "limit": 100,
-  "captured_from": "2026-01-01T00:00:00Z",
-  "captured_to": "2026-01-31T23:59:59Z",
-  "include_analysis": true
-}
+```text
+Fetch historical data for the Kalshi event https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100
 ```
-
-## Example Queries
-
-1. "What were Amazon's revenue and net income figures in Q4 2023?"
-2. "Analyze Tesla's R&D spending trends over the last 3 years."
-3. "What guidance did NVIDIA's CEO provide regarding AI chip demand in their latest earnings call?"
-4. "Compare the price-to-earnings, price-to-sales, and EV/EBITDA ratios for the top 5 semiconductor companies."
-5. "What was Anthropic's latest funding round size, valuation, and key investors?"
-6. "Extract all data fields from zillow.com/san-francisco-ca/"
-7. "Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins"
-8. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
-9. "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
-10. "Analyze the competitive dynamics in the EV charging infrastructure market"
-11. Generate a report for the Kalshi market https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100
-12. Fetch historical data for the Kalshi event https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100
 
 ## Troubleshooting
 
