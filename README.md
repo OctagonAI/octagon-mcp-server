@@ -1,5 +1,6 @@
 # Octagon: MCP for Market Data
 
+[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/OctagonAI/octagon-mcp-server)](https://archestra.ai/mcp-catalog/octagonai__octagon-mcp-server)
 [![smithery badge](https://smithery.ai/badge/@OctagonAI/octagon-mcp-server)](https://smithery.ai/server/@OctagonAI/octagon-mcp-server)
 
 ![Favicon](https://docs.octagonagents.com/logo.svg) The Octagon MCP server provides specialized AI-powered financial research and analysis by integrating with the Octagon Market Intelligence API, enabling users to analyze and extract insights from public filings, earnings calls, financial metrics, private market transactions, and prediction market events within Claude Desktop and other popular MCP clients.
