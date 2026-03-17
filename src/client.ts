@@ -15,10 +15,7 @@ if (!OCTAGON_API_KEY) {
   console.error(
     "Error: OCTAGON_API_KEY is not set in the environment variables",
   );
-  console.error(
-    "Please set the OCTAGON_API_KEY environment variable or use 'env OCTAGON_API_KEY=your_key npx -y octagon-mcp'",
-  );
-  process.exit(1);
+  throw new Error("OCTAGON_API_KEY is not set in the environment variables");
 }
 
 // Initialize OpenAI client with Octagon API

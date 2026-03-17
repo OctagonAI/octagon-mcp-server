@@ -161,7 +161,7 @@ Orchestrates public and private market intelligence analysis.
 
 Example:
 
-```
+```text
 Compare NVIDIA and AMD on latest quarterly revenue growth, margins, and management commentary.
 ```
 
@@ -184,7 +184,7 @@ Performs comprehensive multi-source deep research and synthesis.
 
 Example:
 
-```
+```text
 Research the impact of lower interest rates on late-stage private software valuations over the next 12 months.
 ```
 

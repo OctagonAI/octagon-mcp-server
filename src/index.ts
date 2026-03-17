@@ -8,26 +8,32 @@ import { VERSION } from "./version.js";
 
 const PACKAGE_NAME = "octagon-mcp";
 
-// Create MCP server
-const server = new McpServer({
-  name: PACKAGE_NAME,
-  version: VERSION,
-});
-
-const octagonClient = createClient({
-  defaultHeaders: {
-    "User-Agent": `${PACKAGE_NAME}/${VERSION} (Node.js/${process.versions.node})`,
-  },
-});
-
-registerMcpTools(server, octagonClient);
-
 // Start the server with stdio transport
 async function main() {
+  let server: McpServer | null = null;
+  let transport: StdioServerTransport | null = null;
   try {
-    const transport = new StdioServerTransport();
+    // Create MCP server
+    server = new McpServer({
+      name: PACKAGE_NAME,
+      version: VERSION,
+    });
+
+    const octagonClient = createClient({
+      defaultHeaders: {
+        "User-Agent": `${PACKAGE_NAME}/${VERSION} (Node.js/${process.versions.node})`,
+      },
+    });
+
+    registerMcpTools(server, octagonClient);
+
+    transport = new StdioServerTransport();
     await server.connect(transport);
   } catch (error) {
+    console.error("Error starting server:", error);
+    await server?.close();
+    await transport?.close();
+
     process.exit(1);
   }
 }
