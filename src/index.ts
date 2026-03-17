@@ -4,29 +4,19 @@ import createClient from "#client";
 import { registerMcpTools } from "#tools";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { readFile } from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+import { VERSION } from "./version.js";
 
-// Get package.json info
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const packageJsonPath = path.join(__dirname, "..", "package.json");
-const packageJsonContent = await readFile(packageJsonPath, "utf8");
-const packageInfo = JSON.parse(packageJsonContent) as {
-  name: string;
-  version: string;
-};
+const PACKAGE_NAME = "octagon-mcp";
 
 // Create MCP server
 const server = new McpServer({
-  name: packageInfo.name,
-  version: packageInfo.version,
+  name: PACKAGE_NAME,
+  version: VERSION,
 });
 
 const octagonClient = createClient({
   defaultHeaders: {
-    "User-Agent": `${packageInfo.name}/${packageInfo.version} (Node.js/${process.versions.node})`,
+    "User-Agent": `${PACKAGE_NAME}/${VERSION} (Node.js/${process.versions.node})`,
   },
 });
 

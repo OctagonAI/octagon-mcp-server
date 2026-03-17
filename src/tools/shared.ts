@@ -7,12 +7,14 @@ export async function processStreamingResponse(
 
   try {
     for await (const chunk of stream) {
-      if (chunk.choices && chunk.choices[0]?.delta?.content) {
-        fullResponse += chunk.choices[0].delta.content;
-      }
-
       if (chunk.type === "response.output_text.delta") {
-        fullResponse += chunk.text?.delta || "";
+        // Responses API streaming text token.
+        if (typeof chunk.delta === "string") {
+          fullResponse += chunk.delta;
+        } else if (typeof chunk.text?.delta === "string") {
+          fullResponse += chunk.text.delta;
+        }
+        continue;
       }
     }
 

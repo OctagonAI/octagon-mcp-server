@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { createResponse } from "#tools/shared";
 
-const AGENT_NAME = "prediction-markets-agent";
+const AGENT_NAME = "octagon-prediction-markets-agent";
 const AGENT_DESCRIPTION =
   "A specialized agent for creating research reports on Kalshi events. See what's driving prices, compare market vs model probabilities, and find potential mispricings.";
 

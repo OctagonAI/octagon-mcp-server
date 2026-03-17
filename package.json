@@ -28,6 +28,7 @@
     "access": "public"
   },
   "scripts": {
+    "prebuild": "node scripts/write-version.mjs",
     "build": "tsc && node -e \"require('fs').chmodSync('dist/index.js', '755')\"",
     "test": "echo \"No tests specified\"",
     "start": "node dist/index.js",

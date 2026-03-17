@@ -1,34 +1,34 @@
-# Octagon: MCP for Market Data 
+# Octagon: MCP for Market Data
 
 [![smithery badge](https://smithery.ai/badge/@OctagonAI/octagon-mcp-server)](https://smithery.ai/server/@OctagonAI/octagon-mcp-server)
 
-![Favicon](https://docs.octagonagents.com/logo.svg) The Octagon MCP server provides specialized AI-powered financial research and analysis by integrating with the Octagon Market Intelligence API, enabling users to easily analyze and extract detailed insights from public filings, earnings call transcripts, financial metrics, stock market data, and extensive private market transactions within Claude Desktop and other popular MCP clients.
+![Favicon](https://docs.octagonagents.com/logo.svg) The Octagon MCP server provides specialized AI-powered financial research and analysis by integrating with the Octagon Market Intelligence API, enabling users to analyze and extract insights from public filings, earnings calls, financial metrics, private market transactions, and prediction market events within Claude Desktop and other popular MCP clients.
 
 [![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.mp4)
 
-## Features
+## Tools
 
-✅ **Comprehensive Market Intelligence** - Orchestrates multiple specialized agents for complete market analysis
-   - SEC filings analysis and data extraction (8000+ public companies 10-K, 10-Q, 8-K, 20-F, S-1)
-   - Earnings call transcript analysis (10 yrs of historical and current)
-   - Financial metrics and ratios analysis (10 yrs of historical and current)
-   - Stock market data access (over 10,000 active tickers, daily historical and current)
-   - Private company research (3M+ companies)
-   - Funding rounds and venture capital research (500k+ deals)
-   - M&A and IPO transaction research (2M+ deals)
-   - Institutional holdings and Form 13F filings
-   - Cryptocurrency market data and analysis
-     
-✅ **Deep Research Capabilities** - Comprehensive research tools that can aggregate information from multiple sources
-   
-✅ **Web Scraping** - Extract structured data from any public website (json, csv, python scripts)
+✅ `octagon-agent` orchestrates broad market intelligence analysis
+
+- Public market insights (SEC filings, transcripts, financials, stock data)
+- Private market insights (companies, funding rounds, deals, debt, investors)
+
+✅ `octagon-deep-research-agent` for comprehensive deep research
+
+- Multi-source synthesis for investment research questions
+- Best for up-to-date, cross-source thematic analysis
+
+✅ Prediction market research tooling
+
+- `prediction-markets-agent` for Kalshi event research reports
+- `prediction_markets_history` for structured historical market data retrieval
 
 ## Get Your Octagon API Key
 
 To use Octagon MCP, you need to:
 
 1. Sign up for a free account at [Octagon](https://app.octagonai.co/signup/?redirectToAfterSignup=https://app.octagonai.co/api-keys)
-2. After logging in, from left menu, navigate to **API Keys** 
+2. After logging in, from left menu, navigate to **API Keys**
 3. Generate a new API key
 4. Use this API key in your configuration as the `OCTAGON_API_KEY` value
 
@@ -43,9 +43,11 @@ Before installing or running Octagon MCP, you need to have `npx` (which comes wi
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 2. **Install Node.js (includes npm and npx):**
+
    ```bash
    brew install node
    ```
+
    This will install the latest version of Node.js, npm, and npx.
 
 3. **Verify installation:**
@@ -79,6 +81,7 @@ To configure Octagon MCP for Claude Desktop:
 1. Open Claude Desktop
 2. Go to Settings > Developer > Edit Config
 3. Add the following to your `claude_desktop_config.json` (Replace `your-octagon-api-key` with your Octagon API key):
+
 ```json
 {
   "mcpServers": {
@@ -92,6 +95,7 @@ To configure Octagon MCP for Claude Desktop:
   }
 }
 ```
+
 4. Restart Claude for the changes to take effect
 
 ### Running on Cursor
@@ -102,7 +106,7 @@ Note: Requires Cursor version 0.45.6+
 To configure Octagon MCP in Cursor:
 
 1. Open Cursor Settings
-2. Go to Features > MCP Servers 
+2. Go to Features > MCP Servers
 3. Click "+ Add New MCP Server"
 4. Enter the following:
    - Name: "octagon-mcp" (or your preferred name)
@@ -114,24 +118,6 @@ To configure Octagon MCP in Cursor:
 Replace `your-octagon-api-key` with your Octagon API key.
 
 After adding, refresh the MCP server list to see the new tools. The Composer Agent will automatically use Octagon MCP when appropriate, but you can explicitly request it by describing your investment research needs. Access the Composer via Command+L (Mac), select "Agent" next to the submit button, and enter your query.
-
-### Running on Windsurf
-
-Add this to your `./codeium/windsurf/model_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "octagon-mcp-server": {
-      "command": "npx",
-      "args": ["-y", "octagon-mcp@latest"],
-      "env": {
-        "OCTAGON_API_KEY": "YOUR_API_KEY_HERE"
-      }
-    }
-  }
-}
-```
 
 ### Running with npx
 
@@ -151,58 +137,89 @@ For comprehensive documentation on using Octagon agents, please visit our offici
 [https://docs.octagonagents.com](https://docs.octagonagents.com)
 
 The documentation includes:
+
 - Detailed API references
 - Agent-specific query guidelines
 - Examples and use cases
 - Best practices for investment research
 
+For the latest hosted MCP client setup guide, see:
+
+- [Octagon MCP Server Guide](https://docs.octagonagents.com/guide/mcp-server.html)
+
 ## Available Tools
 
-Each tool uses a single `prompt` parameter that accepts a natural language query. Include all relevant details in your prompt.
+The MCP server currently exposes the following tools:
 
-### octagon-agent
-**[COMPREHENSIVE MARKET INTELLIGENCE]** Orchestrates all agents for comprehensive market intelligence analysis. Combines insights from SEC filings, earnings calls, financial metrics, stock data, institutional holdings, private company research, funding analysis, M&A transactions, investor intelligence, and debt analysis.
+### `octagon-agent`
 
-**Best for:** Complex research requiring multiple data sources and comprehensive analysis across public and private markets.
+Orchestrates public and private market intelligence analysis.
 
-**Example queries:**
+**Parameters**
+
+- `prompt` (string, required): natural language research request.
+
+Example:
+
 ```
-Retrieve year-over-year growth in key income-statement items for AAPL, limited to 5 records and filtered by period FY
-Analyze the latest 10-K filing for AAPL and extract key financial metrics and risk factors
-Retrieve the daily closing prices for AAPL over the last 30 days
-Analyze AAPL's latest earnings call transcript and extract key insights about future guidance
-Provide a comprehensive overview of Stripe, including its business model and key metrics
-Retrieve the funding history for Stripe, including all rounds and investors
-Compare the financial performance of Tesla, Ford, and GM over the last 3 years
-What was Microsoft's acquisition of GitHub valued at and what were the strategic reasons?
-Analyze institutional ownership changes for NVIDIA over the past 6 months
+Compare NVIDIA and AMD on latest quarterly revenue growth, margins, and management commentary.
 ```
 
-### octagon-scraper-agent
-**[PUBLIC & PRIVATE MARKET INTELLIGENCE]** Specialized agent for financial data extraction from investor websites. Extract structured financial data from investor relations websites, tables, and online financial sources.
+### `octagon-deep-research-agent`
 
-**Best for:** Gathering financial data from websites that don't have accessible APIs.
+Performs comprehensive multi-source deep research and synthesis.
 
-**Example queries:**
+**Parameters**
+
+- `prompt` (string, required): natural language research request.
+
+Example:
+
 ```
-Extract all data fields from zillow.com/san-francisco-ca/
-Extract all data fields from www.carvana.com/cars/
-Extract financial metrics from tesla.com/investor-relations
-Extract pricing data from salesforce.com/products/platform/pricing/
+Research the impact of lower interest rates on late-stage private software valuations over the next 12 months.
 ```
 
-### octagon-deep-research-agent
-**[PUBLIC & PRIVATE MARKET INTELLIGENCE]** A comprehensive agent that can utilize multiple sources for deep research analysis. Aggregate research across multiple data sources, synthesize information, and provide comprehensive investment research.
+### `prediction-markets-agent`
 
-**Best for:** Investment research questions requiring up-to-date aggregated information from the web.
+Generates research reports for Kalshi prediction market events.
 
-**Example queries:**
+**Parameters**
+
+- `prompt` (string, required): natural language research request.
+- `cache` (boolean, optional): controls agent variant routing.
+  - omitted: `prediction-markets-agent`
+  - `false`: `prediction-markets-agent:refresh`
+  - `true`: `prediction-markets-agent:cache`
+
+Example:
+
 ```
-Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins
-Analyze the competitive landscape in the cloud computing sector, focusing on AWS, Azure, and Google Cloud margin and growth trends
-Investigate the factors driving electric vehicle adoption and their impact on battery supplier financials
-Research the impact of AI adoption on semiconductor demand and pricing trends
-Analyze the regulatory environment for cryptocurrency and its impact on crypto exchange valuations
+Analyze key drivers for KXBTCY-27JAN0100 and compare market-implied probability to your model estimate.
+```
+
+### `prediction_markets_history`
+
+Fetches historical data for a prediction market event ticker with optional pagination and time filters.
+
+**Parameters**
+
+- `event_ticker` (string, required)
+- `limit` (number, optional)
+- `cursor` (string, optional)
+- `captured_from` (string, optional)
+- `captured_to` (string, optional)
+- `include_analysis` (boolean, optional; when true, requests analysis columns)
+
+Example:
+
+```json
+{
+  "event_ticker": "KXBTCY-27JAN0100",
+  "limit": 100,
+  "captured_from": "2026-01-01T00:00:00Z",
+  "captured_to": "2026-01-31T23:59:59Z",
+  "include_analysis": true
+}
 ```
 
 ## Example Queries
@@ -217,6 +234,8 @@ Analyze the regulatory environment for cryptocurrency and its impact on crypto e
 8. "How many investments did Andreessen Horowitz make in AI startups in the last 12 months?"
 9. "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
 10. "Analyze the competitive dynamics in the EV charging infrastructure market"
+11. Generate a report for the Kalshi market https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100
+12. Fetch historical data for the Kalshi event https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100
 
 ## Troubleshooting
 
@@ -226,13 +245,14 @@ Analyze the regulatory environment for cryptocurrency and its impact on crypto e
 
 ## License
 
-MIT 
+MIT
 
 ## Individual Specialized MCP Servers
 
 While this server provides comprehensive market intelligence combining all our specialized agents, you can also use our individual MCP servers for specific use cases:
 
 ### Public Market Data Servers
+
 - **[Octagon SEC Filings MCP](https://github.com/OctagonAI/octagon-sec-filings-mcp)** - Dedicated server for SEC filings analysis
 - **[Octagon Earnings Transcripts MCP](https://github.com/OctagonAI/octagon-earnings-transcripts-mcp)** - Specialized for earnings call transcript analysis
 - **[Octagon Stock Market Data MCP](https://github.com/OctagonAI/octagon-stock-market-data-mcp)** - Focused on stock market data access
@@ -240,11 +260,13 @@ While this server provides comprehensive market intelligence combining all our s
 - **[Octagon 13F Holdings MCP](https://github.com/OctagonAI/octagon-13f-holdings-mcp)** - Institutional ownership and Form 13F filings
 
 ### Private Market Data Servers
+
 - **[Octagon Private Companies MCP](https://github.com/OctagonAI/octagon-private-companies-mcp)** - Private company research and intelligence
 - **[Octagon Investors MCP](https://github.com/OctagonAI/octagon-investors-mcp)** - Investor profiles and investment strategies
 - **[Octagon Funding Data MCP](https://github.com/OctagonAI/octagon-funding-data-mcp)** - Startup funding rounds and venture capital data
 
 ### Research Tools
+
 - **[Octagon Deep Research MCP](https://github.com/OctagonAI/octagon-deep-research-mcp)** - Comprehensive research and web scraping capabilities
 
 ---
