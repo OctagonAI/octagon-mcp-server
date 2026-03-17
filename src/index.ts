@@ -31,8 +31,7 @@ async function main() {
     await server.connect(transport);
   } catch (error) {
     console.error("Error starting server:", error);
-    await server?.close();
-    await transport?.close();
+    await Promise.allSettled([transport?.close(), server?.close()]);
 
     process.exit(1);
   }
