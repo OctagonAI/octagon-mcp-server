@@ -131,6 +131,10 @@ env OCTAGON_API_KEY=your_octagon_api_key npx -y octagon-mcp
 npm install -g octagon-mcp
 ```
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/octagonai-octagon-mcp-server).
+
 ## Documentation
 
 For comprehensive documentation on using Octagon agents, please visit our official documentation at:
