@@ -4,6 +4,7 @@ import createClient from "#client";
 import { registerMcpTools } from "#tools";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { OCTAGON_MCP_DEBUG, debugLog } from "./debug.js";
 import { VERSION } from "./version.js";
 
 const PACKAGE_NAME = "octagon-mcp";
@@ -23,6 +24,12 @@ async function main() {
       defaultHeaders: {
         "User-Agent": `${PACKAGE_NAME}/${VERSION} (Node.js/${process.versions.node})`,
       },
+    });
+
+    debugLog("MCP server starting", {
+      packageName: PACKAGE_NAME,
+      version: VERSION,
+      debugEnabled: OCTAGON_MCP_DEBUG,
     });
 
     registerMcpTools(server, octagonClient);

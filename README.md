@@ -20,7 +20,7 @@
 
 ✅ Prediction market research tooling
 
-- `prediction-markets-agent` for Kalshi event research reports
+- `octagon-prediction-markets-agent` for Kalshi event research reports
 - `prediction_markets_history` for structured historical market data retrieval
 
 ## Get Your Octagon API Key
@@ -158,6 +158,73 @@ Orchestrates public and private market intelligence analysis.
 **Parameters**
 
 - `prompt` (string, required): natural language research request.
+- `conversation` (string, optional): existing Octagon conversation ID to continue a prior `octagon-agent` thread. Omit this on the first turn.
+- `threadKey` (string, optional): logical visible chat/thread identifier used for safe automatic conversation reuse when the MCP transport does not provide a stable session id.
+- `resetConversation` (boolean, optional): if `true`, clears the stored Octagon thread for the active session/thread anchor before making the request.
+
+**Threaded usage**
+
+`octagon-agent` is the only MCP tool that forwards Octagon conversation threading. The MCP resolves thread state in this order:
+
+1. explicit `conversation`
+2. stored conversation for the MCP `sessionId`
+3. stored conversation for `threadKey`
+4. otherwise no reuse; Octagon starts a fresh conversation
+
+This means you can use any of these patterns:
+
+1. First call: send only `prompt`
+2. Read `structuredContent.conversation` from the MCP result
+3. Second call: either
+   - send the new `prompt` plus that `conversation`, or
+   - keep the same MCP session, or
+   - send the same `threadKey`
+
+When both `sessionId` and `threadKey` are absent, the MCP does **not** auto-reuse a prior conversation. This avoids cross-chat leakage when the transport has no stable identity anchor.
+
+The MCP result keeps the answer in `content`, and also returns structured metadata for orchestrators in `structuredContent`:
+
+```json
+{
+  "model": "octagon-agent",
+  "text": "Which stock would you like the latest price for?",
+  "conversation": "conv_123",
+  "responseId": "resp_123",
+  "followUp": {
+    "required": true,
+    "inputTemplate": "<ticker or company name>",
+    "instructions": "Reply with just the missing detail and reuse the conversation value from this response."
+  }
+}
+```
+
+Second-turn example:
+
+```json
+{
+  "prompt": "AAPL",
+  "conversation": "conv_123"
+}
+```
+
+Thread-key example:
+
+```json
+{
+  "prompt": "AAPL",
+  "threadKey": "portfolio-chat-42"
+}
+```
+
+Explicit refresh example:
+
+```json
+{
+  "prompt": "Start a fresh Octagon thread for this chat",
+  "threadKey": "portfolio-chat-42",
+  "resetConversation": true
+}
+```
 
 Example:
 
@@ -195,7 +262,7 @@ More examples:
 - "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
 - "Analyze the competitive dynamics in the EV charging infrastructure market"
 
-### `prediction-markets-agent`
+### `octagon-prediction-markets-agent`
 
 Generates research reports for Kalshi prediction market events.
 
