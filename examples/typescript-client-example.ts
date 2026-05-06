@@ -25,17 +25,46 @@ async function main() {
       console.log(`- ${tool.name}: ${tool.description}`);
     }
 
-    // Example: Query comprehensive market intelligence
+    // Example: Query comprehensive market intelligence.
+    // Mark the first turn of a new visible chat with newConversation.
     console.log("\nQuerying comprehensive market intelligence for Apple...");
     const marketResult = await client.callTool({
       name: "octagon-agent",
       arguments: {
+        newConversation: true,
         prompt: "Analyze Apple's latest 10-K filing and extract key financial metrics and risk factors",
       },
     });
 
     console.log("Market Intelligence Result:");
     console.log((marketResult as any).content[0].text);
+    const conversationId = (marketResult as any).structuredContent?.conversation;
+    console.log("Conversation ID:", conversationId);
+
+    console.log("\nContinuing the same octagon-agent session...");
+    const followUpResult = await client.callTool({
+      name: "octagon-agent",
+      arguments: {
+        prompt: "Now compare those risk factors to Microsoft's latest filing",
+      },
+    });
+
+    console.log("Follow-up Result:");
+    console.log((followUpResult as any).content[0].text);
+
+    if (conversationId) {
+      console.log("\nBranching with an explicit conversation override...");
+      const branchResult = await client.callTool({
+        name: "octagon-agent",
+        arguments: {
+          prompt: "Only summarize the most material Apple-specific risks again",
+          conversation: conversationId,
+        },
+      });
+
+      console.log("Explicit Conversation Result:");
+      console.log((branchResult as any).content[0].text);
+    }
 
     // Example: Deep research analysis
     console.log("\nPerforming deep research on AI market trends...");
@@ -49,17 +78,18 @@ async function main() {
     console.log("Deep Research Analysis:");
     console.log((researchResult as any).content[0].text);
 
-    // Example: Web scraping
-    console.log("\nExtracting data from a website...");
-    const scrapingResult = await client.callTool({
-      name: "octagon-scraper-agent",
+    // Example: Prediction markets analysis
+    console.log("\nAnalyzing a Kalshi event...");
+    const predictionResult = await client.callTool({
+      name: "octagon-prediction-markets-agent",
       arguments: {
-        prompt: "Extract all data fields from zillow.com/san-francisco-ca/",
+        prompt:
+          "Generate a report for the Kalshi market https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100",
       },
     });
 
-    console.log("Web Scraping Result:");
-    console.log((scrapingResult as any).content[0].text);
+    console.log("Prediction Markets Result:");
+    console.log((predictionResult as any).content[0].text);
 
     // Close the client
     await client.close();

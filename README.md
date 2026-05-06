@@ -20,7 +20,7 @@
 
 ✅ Prediction market research tooling
 
-- `prediction-markets-agent` for Kalshi event research reports
+- `octagon-prediction-markets-agent` for Kalshi event research reports
 - `prediction_markets_history` for structured historical market data retrieval
 
 ## Get Your Octagon API Key
@@ -158,6 +158,84 @@ Orchestrates public and private market intelligence analysis.
 **Parameters**
 
 - `prompt` (string, required): natural language research request.
+- `conversation` (string, optional): existing Octagon conversation ID to continue a prior `octagon-agent` thread. Omit this on the first turn.
+- `newConversation` (boolean, optional): if `true`, starts a fresh Octagon thread for the active session/thread anchor. Recommended for the first turn of a brand new visible chat in top-layer hosts such as Claude Desktop.
+
+**Threaded usage**
+
+`octagon-agent` is the only MCP tool that forwards Octagon conversation threading. It is a stateful tool and expects session continuity. The MCP resolves session/thread state in this order:
+
+1. stored conversation for MCP transport session identity, when the transport actually provides it
+2. stored conversation for the server-managed default `stdio` session
+3. explicit `conversation` can still override the active session conversation for that call
+
+This package currently runs as a `stdio` MCP server. In `stdio` mode, the server automatically establishes a process-local session for continuity across calls. Most local hosts such as Claude Desktop or Cursor can therefore use `octagon-agent` without supplying any extra threading fields for basic follow-up behavior.
+
+When a top-layer host knows a call is the first turn of a new visible chat, it should pass `newConversation: true`. That explicitly clears any stored Octagon thread for the active MCP session anchor before the call, which prevents stale continuity when a `stdio` host reuses the same long-lived MCP process across multiple visible chats.
+
+This means you can use any of these patterns:
+
+1. First call: send only `prompt`
+2. Let the MCP host preserve transport session continuity or rely on the default stdio session
+3. Second call: either
+   - send the new `prompt` in the same MCP session, or
+   - keep using the same stdio MCP process, or
+   - explicitly pass the previous `conversation`
+
+Transport session identity is the canonical continuity primitive for standards-compliant stateful MCP transports. For local `stdio` usage, the server-managed process session provides default continuity.
+
+Session identity and Octagon conversation identity are different concepts:
+
+- MCP session identity controls server-side continuity across tool calls
+- Octagon `conversation` controls the active Octagon thread inside that session
+
+The MCP result keeps the answer in `content`, and also returns structured metadata for orchestrators in `structuredContent`:
+
+```json
+{
+  "model": "octagon-agent",
+  "text": "Which stock would you like the latest price for?",
+  "conversation": "conv_123",
+  "responseId": "resp_123",
+  "followUp": {
+    "required": true,
+    "inputTemplate": "<ticker or company name>",
+    "instructions": "Reply with just the missing detail and reuse the conversation value from this response."
+  }
+}
+```
+
+Explicit carry-forward example:
+
+```json
+{
+  "prompt": "AAPL",
+  "conversation": "conv_123"
+}
+```
+
+New visible chat example:
+
+```json
+{
+  "prompt": "Analyze Apple",
+  "newConversation": true
+}
+```
+
+Explicit refresh example:
+
+```json
+{
+  "prompt": "Start a fresh Octagon thread for this chat",
+  "newConversation": true
+}
+```
+
+**Stateful tool policy**
+
+- `octagon-agent`: stateful, uses a usable continuity anchor. In `stdio` hosts, that defaults to the server-managed process session unless you provide explicit `conversation`
+- other MCP tools: stateless and may run without session continuity
 
 Example:
 
@@ -195,7 +273,7 @@ More examples:
 - "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
 - "Analyze the competitive dynamics in the EV charging infrastructure market"
 
-### `prediction-markets-agent`
+### `octagon-prediction-markets-agent`
 
 Generates research reports for Kalshi prediction market events.
 
