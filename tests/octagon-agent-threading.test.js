@@ -293,6 +293,54 @@ test("octagon-agent newConversation drops stored conversation in a transport ses
   assert.equal(capturedRequests[1].conversation, undefined);
 });
 
+test("octagon-agent preserves the previous thread if newConversation request fails", async () => {
+  const capturedRequests = [];
+  let callCount = 0;
+  const client = {
+    responses: {
+      create: async request => {
+        callCount += 1;
+        capturedRequests.push(request);
+
+        if (callCount === 2) {
+          throw new Error("transient octagon failure");
+        }
+
+        return {
+          id: `resp_preserve_${callCount}`,
+          conversation:
+            callCount === 1 ? "conv_preserve_original" : "conv_preserve_original",
+          output_text: "Preserve-thread answer",
+          metadata: { tool: "mcp" },
+        };
+      },
+    },
+  };
+
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "first turn" },
+    { sessionId: "chat-preserve-reset" },
+  );
+
+  const failedReset = await executeOctagonAgentTool(
+    client,
+    { prompt: "start fresh", newConversation: true },
+    { sessionId: "chat-preserve-reset" },
+  );
+
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "retry after failed reset" },
+    { sessionId: "chat-preserve-reset" },
+  );
+
+  assert.equal(failedReset.isError, true);
+  assert.equal(capturedRequests[0].conversation, undefined);
+  assert.equal(capturedRequests[1].conversation, undefined);
+  assert.equal(capturedRequests[2].conversation, "conv_preserve_original");
+});
+
 test("octagon-agent explicit conversation overrides the stored session conversation", async () => {
   const capturedRequests = [];
   const client = {

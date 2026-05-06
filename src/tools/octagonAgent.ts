@@ -2,7 +2,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import OpenAI from "openai";
 import { z } from "zod";
 
-import { debugLog } from "../debug.js";
+import {
+  debugLog,
+  summarizeDebugIdentifier,
+  summarizeDebugPrompt,
+} from "../debug.js";
 import {
   clearOctagonConversation,
   getSessionState,
@@ -79,14 +83,14 @@ export async function executeOctagonAgentTool(
     const storedConversation = storedSessionState?.activeConversationId;
     const effectiveReset = Boolean(newConversation);
     const resetReason = newConversation ? "new_conversation_request" : null;
+    const promptSummary = summarizeDebugPrompt(prompt);
 
     if (conversation && newConversation) {
       debugLog("octagon-agent conflicting continuation arguments", {
-        prompt,
-        promptLength: prompt.length,
+        ...promptSummary,
         transportKind: sessionContext.transportKind,
-        sessionId: sessionContext.sessionId ?? null,
-        providedConversation: conversation,
+        sessionId: summarizeDebugIdentifier(sessionContext.sessionId),
+        providedConversation: summarizeDebugIdentifier(conversation),
         newConversation: true,
       });
       return createTextErrorResult(CONFLICTING_CONTINUATION_ERROR);
@@ -94,10 +98,9 @@ export async function executeOctagonAgentTool(
 
     if (!sessionAnchor && !conversation) {
       debugLog("octagon-agent missing required session continuity", {
-        prompt,
-        promptLength: prompt.length,
+        ...promptSummary,
         transportKind: sessionContext.transportKind,
-        sessionId: sessionContext.sessionId ?? null,
+        sessionId: summarizeDebugIdentifier(sessionContext.sessionId),
         anchorType: "none",
         providedConversation: null,
         storedConversation: null,
@@ -114,10 +117,6 @@ export async function executeOctagonAgentTool(
             : "missing_required_session_anchor",
       });
       return createTextErrorResult(MISSING_SESSION_ERROR);
-    }
-
-    if (effectiveReset) {
-      clearOctagonConversation(sessionContext, resetReason ?? "explicit_reset");
     }
 
     const resolvedConversation =
@@ -137,16 +136,15 @@ export async function executeOctagonAgentTool(
     const sessionStateId = storedSessionState?.sessionId ?? sessionAnchor?.sessionId;
 
     debugLog("octagon-agent inbound MCP request", {
-      prompt,
-      promptLength: prompt.length,
+      ...promptSummary,
       transportKind: sessionContext.transportKind,
-      sessionId: sessionContext.sessionId ?? null,
+      sessionId: summarizeDebugIdentifier(sessionContext.sessionId),
       sessionSource,
-      sessionStateId: sessionStateId ?? null,
+      sessionStateId: summarizeDebugIdentifier(sessionStateId),
       anchorType,
-      providedConversation: conversation ?? null,
-      storedConversation: storedConversation ?? null,
-      resolvedConversation: resolvedConversation ?? null,
+      providedConversation: summarizeDebugIdentifier(conversation),
+      storedConversation: summarizeDebugIdentifier(storedConversation),
+      resolvedConversation: summarizeDebugIdentifier(resolvedConversation),
       hasConversation: Boolean(resolvedConversation),
       newConversation: Boolean(newConversation),
       sessionResetApplied: effectiveReset,
@@ -166,6 +164,10 @@ export async function executeOctagonAgentTool(
       conversation: resolvedConversation,
     });
 
+    if (effectiveReset) {
+      clearOctagonConversation(sessionContext, resetReason ?? "explicit_reset");
+    }
+
     if (result.conversation) {
       storeOctagonConversation(sessionContext, {
         conversation: result.conversation,
@@ -180,8 +182,8 @@ export async function executeOctagonAgentTool(
 
     debugLog("octagon-agent outbound MCP tool result", {
       model: result.model,
-      conversation: result.conversation ?? null,
-      responseId: result.responseId ?? null,
+      conversation: summarizeDebugIdentifier(result.conversation),
+      responseId: summarizeDebugIdentifier(result.responseId),
       textLength: result.text.length,
       hasFollowUp: Boolean(result.followUp),
       metadataKeys: result.rawMetadata ? Object.keys(result.rawMetadata) : [],

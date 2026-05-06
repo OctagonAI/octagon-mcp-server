@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 const DEFAULT_DEBUG_ENABLED = false;
 
 function parseBooleanFlag(
@@ -28,6 +30,30 @@ export const OCTAGON_MCP_DEBUG = parseBooleanFlag(
   process.env.OCTAGON_MCP_DEBUG,
   DEFAULT_DEBUG_ENABLED,
 );
+
+function hashValue(value: string): string {
+  return createHash("sha256").update(value).digest("hex").slice(0, 12);
+}
+
+export function summarizeDebugIdentifier(
+  value: string | null | undefined,
+): string | null {
+  if (!value) {
+    return null;
+  }
+
+  return `sha256:${hashValue(value)}`;
+}
+
+export function summarizeDebugPrompt(prompt: string): {
+  promptLength: number;
+  promptHash: string;
+} {
+  return {
+    promptLength: prompt.length,
+    promptHash: `sha256:${hashValue(prompt)}`,
+  };
+}
 
 function safeSerialize(payload: unknown): string {
   if (typeof payload === "string") {

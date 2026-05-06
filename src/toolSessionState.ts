@@ -1,4 +1,4 @@
-import { debugLog } from "./debug.js";
+import { debugLog, summarizeDebugIdentifier } from "./debug.js";
 import { randomUUID } from "node:crypto";
 
 export type ToolContext = {
@@ -177,10 +177,10 @@ export function clearOctagonConversation(
 
   if (hadConversation) {
     debugLog("octagon-agent session conversation cleared", {
-      sessionId: context?.sessionId ?? null,
+      sessionId: summarizeDebugIdentifier(context?.sessionId),
       transportKind: context?.transportKind ?? "unknown",
       anchorType: anchor.type,
-      anchorKey: anchor.key,
+      anchorKey: summarizeDebugIdentifier(anchor.key),
       reason: reason ?? "unspecified",
     });
   }
@@ -202,12 +202,14 @@ export function terminateSession(
 
   sessionStateByAnchor.delete(anchor.key);
   debugLog("mcp session terminated", {
-    sessionId: context?.sessionId ?? null,
+    sessionId: summarizeDebugIdentifier(context?.sessionId),
     transportKind: context?.transportKind ?? "unknown",
     anchorType: anchor.type,
-    anchorKey: anchor.key,
+    anchorKey: summarizeDebugIdentifier(anchor.key),
     activeTool: existing.activeTool ?? null,
-    activeConversationId: existing.activeConversationId ?? null,
+    activeConversationId: summarizeDebugIdentifier(
+      existing.activeConversationId,
+    ),
     reason: reason ?? "unspecified",
   });
 }
