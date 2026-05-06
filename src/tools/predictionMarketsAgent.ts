@@ -2,11 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import OpenAI from "openai";
 import { z } from "zod";
 
-import {
-  clearOctagonConversationForToolChange,
-  normalizeToolContext,
-  type SessionExtra,
-} from "../toolSessionState.js";
+import { type SessionExtra } from "../toolSessionState.js";
 import { createStreamingTextResponse, createTextErrorResult } from "#tools/shared";
 
 const AGENT_NAME = "octagon-prediction-markets-agent";
@@ -44,7 +40,6 @@ export async function executePredictionMarketsTool(
   }
 
   try {
-    clearOctagonConversationForToolChange(normalizeToolContext(extra), AGENT_NAME);
     const result = await createStreamingTextResponse(client, model, prompt);
     return {
       content: [{ type: "text" as const, text: result }],

@@ -2,11 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import OpenAI, { APIError } from "openai";
 import { z } from "zod";
 
-import {
-  clearOctagonConversationForToolChange,
-  normalizeToolContext,
-  type SessionExtra,
-} from "../toolSessionState.js";
+import { type SessionExtra } from "../toolSessionState.js";
 
 const TOOL_NAME = "prediction_markets_history";
 const TOOL_DESCRIPTION = `Fetch historical data for a prediction market event by ticker.
@@ -69,7 +65,6 @@ export async function executePredictionMarketsHistoryTool(
   extra?: SessionExtra,
 ) {
   try {
-    clearOctagonConversationForToolChange(normalizeToolContext(extra), TOOL_NAME);
     const eventTicker = encodeURIComponent(params.event_ticker.trim());
 
     const query: Record<string, string | number> = {};

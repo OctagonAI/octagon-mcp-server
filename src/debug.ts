@@ -1,4 +1,4 @@
-const DEFAULT_DEBUG_ENABLED = true;
+const DEFAULT_DEBUG_ENABLED = false;
 
 function parseBooleanFlag(
   value: string | undefined,

@@ -135,15 +135,6 @@ export function getSessionState(
   return touchedState;
 }
 
-export function touchSession(
-  context?: ToolContext,
-  { activeTool }: { activeTool?: string } = {},
-): SessionState | undefined {
-  return upsertSessionState(context, {
-    activeTool,
-  });
-}
-
 export function storeOctagonConversation(
   context: ToolContext | undefined,
   value: {
@@ -219,19 +210,6 @@ export function terminateSession(
     activeConversationId: existing.activeConversationId ?? null,
     reason: reason ?? "unspecified",
   });
-}
-
-export function clearOctagonConversationForToolChange(
-  context: ToolContext | undefined,
-  toolName: string,
-): void {
-  touchSession(context, { activeTool: toolName });
-
-  if (toolName === "octagon-agent") {
-    return;
-  }
-
-  clearOctagonConversation(context, `tool_changed:${toolName}`);
 }
 
 export function resetSessionStateForTests(): void {

@@ -2,11 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import OpenAI from "openai";
 import { z } from "zod";
 
-import {
-  clearOctagonConversationForToolChange,
-  normalizeToolContext,
-  type SessionExtra,
-} from "../toolSessionState.js";
+import { type SessionExtra } from "../toolSessionState.js";
 import { createStreamingTextResponse, createTextErrorResult } from "#tools/shared";
 
 const AGENT_NAME = "octagon-deep-research-agent";
@@ -31,7 +27,6 @@ export async function executeDeepResearchTool(
   extra?: SessionExtra,
 ) {
   try {
-    clearOctagonConversationForToolChange(normalizeToolContext(extra), AGENT_NAME);
     const result = await createStreamingTextResponse(client, AGENT_NAME, prompt);
     return {
       content: [{ type: "text" as const, text: result }],

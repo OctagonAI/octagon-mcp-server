@@ -474,7 +474,7 @@ test("non-octagon tools remain non-threaded", async () => {
   assert.ok(!("structuredContent" in result));
 });
 
-test("switching to a non-octagon tool clears stored conversation", async () => {
+test("non-octagon tools do not modify stored octagon conversation", async () => {
   const capturedRequests = [];
   const octagonClient = {
     responses: {
@@ -519,5 +519,5 @@ test("switching to a non-octagon tool clears stored conversation", async () => {
   );
 
   assert.equal(capturedRequests[0].conversation, undefined);
-  assert.equal(capturedRequests[1].conversation, undefined);
+  assert.equal(capturedRequests[1].conversation, "conv_tool_change");
 });
