@@ -27,6 +27,8 @@ const octagonAgentInputShape = {
     .describe("Your natural language query or request for the agent"),
   conversation: z
     .string()
+    .trim()
+    .min(1)
     .optional()
     .describe(
       "Existing Octagon conversation ID to continue a prior octagon-agent thread. Omit on the first turn.",

@@ -108,6 +108,17 @@ test("octagon-agent forwards conversation on later turns", async () => {
   assert.equal(result.content[0].text, "Here is the follow-up answer.");
 });
 
+test("octagon-agent rejects blank conversation ids at the schema boundary", async () => {
+  assert.throws(
+    () =>
+      octagonAgentInputSchema.parse({
+        prompt: "follow up",
+        conversation: "   ",
+      }),
+    /at least 1 character/i,
+  );
+});
+
 test("octagon-agent reuses stored conversation in the same transport session", async () => {
   const capturedRequests = [];
   const client = {
