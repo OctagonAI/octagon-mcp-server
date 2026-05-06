@@ -25,11 +25,13 @@ async function main() {
       console.log(`- ${tool.name}: ${tool.description}`);
     }
 
-    // Example: Query comprehensive market intelligence
+    // Example: Query comprehensive market intelligence.
+    // Mark the first turn of a new visible chat with newConversation.
     console.log("\nQuerying comprehensive market intelligence for Apple...");
     const marketResult = await client.callTool({
       name: "octagon-agent",
       arguments: {
+        newConversation: true,
         prompt: "Analyze Apple's latest 10-K filing and extract key financial metrics and risk factors",
       },
     });
@@ -39,18 +41,29 @@ async function main() {
     const conversationId = (marketResult as any).structuredContent?.conversation;
     console.log("Conversation ID:", conversationId);
 
+    console.log("\nContinuing the same octagon-agent session...");
+    const followUpResult = await client.callTool({
+      name: "octagon-agent",
+      arguments: {
+        prompt: "Now compare those risk factors to Microsoft's latest filing",
+      },
+    });
+
+    console.log("Follow-up Result:");
+    console.log((followUpResult as any).content[0].text);
+
     if (conversationId) {
-      console.log("\nContinuing the same octagon-agent thread...");
-      const followUpResult = await client.callTool({
+      console.log("\nBranching with an explicit conversation override...");
+      const branchResult = await client.callTool({
         name: "octagon-agent",
         arguments: {
-          prompt: "Now compare those risk factors to Microsoft's latest filing",
+          prompt: "Only summarize the most material Apple-specific risks again",
           conversation: conversationId,
         },
       });
 
-      console.log("Follow-up Result:");
-      console.log((followUpResult as any).content[0].text);
+      console.log("Explicit Conversation Result:");
+      console.log((branchResult as any).content[0].text);
     }
 
     // Example: Deep research analysis

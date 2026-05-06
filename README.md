@@ -159,28 +159,35 @@ Orchestrates public and private market intelligence analysis.
 
 - `prompt` (string, required): natural language research request.
 - `conversation` (string, optional): existing Octagon conversation ID to continue a prior `octagon-agent` thread. Omit this on the first turn.
-- `threadKey` (string, optional): logical visible chat/thread identifier used for safe automatic conversation reuse when the MCP transport does not provide a stable session id.
-- `resetConversation` (boolean, optional): if `true`, clears the stored Octagon thread for the active session/thread anchor before making the request.
+- `newConversation` (boolean, optional): if `true`, starts a fresh Octagon thread for the active session/thread anchor. Recommended for the first turn of a brand new visible chat in top-layer hosts such as Claude Desktop.
 
 **Threaded usage**
 
-`octagon-agent` is the only MCP tool that forwards Octagon conversation threading. The MCP resolves thread state in this order:
+`octagon-agent` is the only MCP tool that forwards Octagon conversation threading. It is a stateful tool and expects session continuity. The MCP resolves session/thread state in this order:
 
-1. explicit `conversation`
-2. stored conversation for the MCP `sessionId`
-3. stored conversation for `threadKey`
-4. otherwise no reuse; Octagon starts a fresh conversation
+1. stored conversation for MCP transport session identity, when the transport actually provides it
+2. stored conversation for the server-managed default `stdio` session
+3. explicit `conversation` can still override the active session conversation for that call
+
+This package currently runs as a `stdio` MCP server. In `stdio` mode, the server automatically establishes a process-local session for continuity across calls. Most local hosts such as Claude Desktop or Cursor can therefore use `octagon-agent` without supplying any extra threading fields for basic follow-up behavior.
+
+When a top-layer host knows a call is the first turn of a new visible chat, it should pass `newConversation: true`. That explicitly clears any stored Octagon thread for the active MCP session anchor before the call, which prevents stale continuity when a `stdio` host reuses the same long-lived MCP process across multiple visible chats.
 
 This means you can use any of these patterns:
 
 1. First call: send only `prompt`
-2. Read `structuredContent.conversation` from the MCP result
+2. Let the MCP host preserve transport session continuity or rely on the default stdio session
 3. Second call: either
-   - send the new `prompt` plus that `conversation`, or
-   - keep the same MCP session, or
-   - send the same `threadKey`
+   - send the new `prompt` in the same MCP session, or
+   - keep using the same stdio MCP process, or
+   - explicitly pass the previous `conversation`
 
-When both `sessionId` and `threadKey` are absent, the MCP does **not** auto-reuse a prior conversation. This avoids cross-chat leakage when the transport has no stable identity anchor.
+Transport session identity is the canonical continuity primitive for standards-compliant stateful MCP transports. For local `stdio` usage, the server-managed process session provides default continuity.
+
+Session identity and Octagon conversation identity are different concepts:
+
+- MCP session identity controls server-side continuity across tool calls
+- Octagon `conversation` controls the active Octagon thread inside that session
 
 The MCP result keeps the answer in `content`, and also returns structured metadata for orchestrators in `structuredContent`:
 
@@ -198,7 +205,7 @@ The MCP result keeps the answer in `content`, and also returns structured metada
 }
 ```
 
-Second-turn example:
+Explicit carry-forward example:
 
 ```json
 {
@@ -207,12 +214,12 @@ Second-turn example:
 }
 ```
 
-Thread-key example:
+New visible chat example:
 
 ```json
 {
-  "prompt": "AAPL",
-  "threadKey": "portfolio-chat-42"
+  "prompt": "Analyze Apple",
+  "newConversation": true
 }
 ```
 
@@ -221,10 +228,14 @@ Explicit refresh example:
 ```json
 {
   "prompt": "Start a fresh Octagon thread for this chat",
-  "threadKey": "portfolio-chat-42",
-  "resetConversation": true
+  "newConversation": true
 }
 ```
+
+**Stateful tool policy**
+
+- `octagon-agent`: stateful, uses a usable continuity anchor. In `stdio` hosts, that defaults to the server-managed process session unless you provide explicit `conversation`
+- other MCP tools: stateless and may run without session continuity
 
 Example:
 

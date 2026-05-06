@@ -9,6 +9,15 @@ import {
   executeOctagonAgentTool,
   octagonAgentInputSchema,
 } from "../dist/tools/octagonAgent.js";
+import {
+  getDefaultStdioSessionIdForTests,
+  resetSessionStateForTests,
+  terminateSession,
+} from "../dist/toolSessionState.js";
+
+test.beforeEach(() => {
+  resetSessionStateForTests();
+});
 
 test("octagon-agent first turn returns structured conversation metadata", async () => {
   let capturedRequest;
@@ -99,7 +108,7 @@ test("octagon-agent forwards conversation on later turns", async () => {
   assert.equal(result.content[0].text, "Here is the follow-up answer.");
 });
 
-test("octagon-agent reuses stored conversation in the same session", async () => {
+test("octagon-agent reuses stored conversation in the same transport session", async () => {
   const capturedRequests = [];
   const client = {
     responses: {
@@ -130,16 +139,50 @@ test("octagon-agent reuses stored conversation in the same session", async () =>
   assert.equal(capturedRequests[1].conversation, "conv_session_reused");
 });
 
-test("octagon-agent reuses stored conversation with threadKey when sessionId is null", async () => {
+test("octagon-agent reuses stored conversation in a transport-backed session", async () => {
   const capturedRequests = [];
   const client = {
     responses: {
       create: async request => {
         capturedRequests.push(request);
         return {
-          id: `resp_thread_${capturedRequests.length}`,
-          conversation: "conv_thread_key",
-          output_text: "Thread-key answer",
+          id: `resp_transport_priority_${capturedRequests.length}`,
+          conversation:
+            capturedRequests.length === 1
+              ? "conv_transport_session"
+              : "conv_transport_followup",
+          output_text: "Transport-priority answer",
+          metadata: { tool: "mcp" },
+        };
+      },
+    },
+  };
+
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "first turn" },
+    { sessionId: "transport-session-2", transportKind: "streamable_http" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "follow up" },
+    { sessionId: "transport-session-2", transportKind: "streamable_http" },
+  );
+
+  assert.equal(capturedRequests[0].conversation, undefined);
+  assert.equal(capturedRequests[1].conversation, "conv_transport_session");
+});
+
+test("octagon-agent automatically uses the default stdio session when no anchor is provided", async () => {
+  const capturedRequests = [];
+  const client = {
+    responses: {
+      create: async request => {
+        capturedRequests.push(request);
+        return {
+          id: `resp_stdio_default_${capturedRequests.length}`,
+          conversation: `conv_stdio_default_${capturedRequests.length}`,
+          output_text: "Default stdio answer",
           metadata: { tool: "mcp" },
         };
       },
@@ -147,28 +190,26 @@ test("octagon-agent reuses stored conversation with threadKey when sessionId is 
   };
 
   await executeOctagonAgentTool(client, {
-    prompt: "first thread-key turn",
-    threadKey: "visible-chat-1",
+    prompt: "first turn without explicit anchor",
   });
   await executeOctagonAgentTool(client, {
-    prompt: "follow-up without explicit conversation",
-    threadKey: "visible-chat-1",
+    prompt: "second turn without explicit anchor",
   });
 
   assert.equal(capturedRequests[0].conversation, undefined);
-  assert.equal(capturedRequests[1].conversation, "conv_thread_key");
+  assert.equal(capturedRequests[1].conversation, "conv_stdio_default_1");
 });
 
-test("octagon-agent does not auto-reuse when sessionId and threadKey are missing", async () => {
+test("octagon-agent newConversation forces a fresh thread in the default stdio session", async () => {
   const capturedRequests = [];
   const client = {
     responses: {
       create: async request => {
         capturedRequests.push(request);
         return {
-          id: `resp_no_anchor_${capturedRequests.length}`,
-          conversation: `conv_no_anchor_${capturedRequests.length}`,
-          output_text: "No-anchor answer",
+          id: `resp_new_conversation_${capturedRequests.length}`,
+          conversation: `conv_new_conversation_${capturedRequests.length}`,
+          output_text: "New conversation answer",
           metadata: { tool: "mcp" },
         };
       },
@@ -176,17 +217,52 @@ test("octagon-agent does not auto-reuse when sessionId and threadKey are missing
   };
 
   await executeOctagonAgentTool(client, {
-    prompt: "first turn without safe anchor",
+    prompt: "first chat turn",
   });
   await executeOctagonAgentTool(client, {
-    prompt: "second turn without safe anchor",
+    prompt: "first turn of a new chat",
+    newConversation: true,
+  });
+  await executeOctagonAgentTool(client, {
+    prompt: "follow-up in the new chat",
   });
 
   assert.equal(capturedRequests[0].conversation, undefined);
   assert.equal(capturedRequests[1].conversation, undefined);
+  assert.equal(capturedRequests[2].conversation, "conv_new_conversation_2");
 });
 
-test("octagon-agent resetConversation drops stored conversation", async () => {
+test("octagon-agent rejects conversation with newConversation", async () => {
+  let callCount = 0;
+  const client = {
+    responses: {
+      create: async () => {
+        callCount += 1;
+        return {
+          id: "resp_unexpected_conflict",
+          conversation: "conv_unexpected_conflict",
+          output_text: "Unexpected conflict answer",
+          metadata: { tool: "mcp" },
+        };
+      },
+    },
+  };
+
+  const result = await executeOctagonAgentTool(client, {
+    prompt: "conflicting request",
+    conversation: "conv_existing",
+    newConversation: true,
+  });
+
+  assert.equal(callCount, 0);
+  assert.equal(result.isError, true);
+  assert.match(
+    result.content[0].text,
+    /cannot include both conversation and newConversation/i,
+  );
+});
+
+test("octagon-agent newConversation drops stored conversation in a transport session", async () => {
   const capturedRequests = [];
   const client = {
     responses: {
@@ -195,7 +271,7 @@ test("octagon-agent resetConversation drops stored conversation", async () => {
         return {
           id: `resp_reset_${capturedRequests.length}`,
           conversation: `conv_reset_${capturedRequests.length}`,
-          output_text: "Reset-aware answer",
+          output_text: "New-conversation-aware answer",
           metadata: { tool: "mcp" },
         };
       },
@@ -209,7 +285,7 @@ test("octagon-agent resetConversation drops stored conversation", async () => {
   );
   await executeOctagonAgentTool(
     client,
-    { prompt: "new chat", resetConversation: true },
+    { prompt: "new chat", newConversation: true },
     { sessionId: "chat-reset" },
   );
 
@@ -217,16 +293,126 @@ test("octagon-agent resetConversation drops stored conversation", async () => {
   assert.equal(capturedRequests[1].conversation, undefined);
 });
 
-test("octagon-agent resetConversation clears the active threadKey anchor", async () => {
+test("octagon-agent explicit conversation overrides the stored session conversation", async () => {
   const capturedRequests = [];
   const client = {
     responses: {
       create: async request => {
         capturedRequests.push(request);
         return {
-          id: `resp_thread_reset_${capturedRequests.length}`,
-          conversation: `conv_thread_reset_${capturedRequests.length}`,
-          output_text: "Thread-key reset answer",
+          id: `resp_override_${capturedRequests.length}`,
+          conversation:
+            capturedRequests.length === 1 ? "conv_session_original" : "conv_branch",
+          output_text: "Override-aware answer",
+          metadata: { tool: "mcp" },
+        };
+      },
+    },
+  };
+
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "first turn" },
+    { sessionId: "chat-override" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    {
+      prompt: "branch from another thread",
+      conversation: "conv_explicit_branch",
+    },
+    { sessionId: "chat-override" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "continue after override" },
+    { sessionId: "chat-override" },
+  );
+
+  assert.equal(capturedRequests[0].conversation, undefined);
+  assert.equal(capturedRequests[1].conversation, "conv_explicit_branch");
+  assert.equal(capturedRequests[2].conversation, "conv_branch");
+});
+
+test("octagon-agent isolates conversation state across different sessions", async () => {
+  const capturedRequests = [];
+  const client = {
+    responses: {
+      create: async request => {
+        capturedRequests.push(request);
+        return {
+          id: `resp_isolation_${capturedRequests.length}`,
+          conversation: `conv_isolation_${capturedRequests.length}`,
+          output_text: "Isolation answer",
+          metadata: { tool: "mcp" },
+        };
+      },
+    },
+  };
+
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "session one first turn" },
+    { sessionId: "chat-isolation-1" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "session two first turn" },
+    { sessionId: "chat-isolation-2" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "session one follow-up" },
+    { sessionId: "chat-isolation-1" },
+  );
+
+  assert.equal(capturedRequests[0].conversation, undefined);
+  assert.equal(capturedRequests[1].conversation, undefined);
+  assert.equal(capturedRequests[2].conversation, "conv_isolation_1");
+});
+
+test("octagon-agent session termination clears stored session state", async () => {
+  const capturedRequests = [];
+  const client = {
+    responses: {
+      create: async request => {
+        capturedRequests.push(request);
+        return {
+          id: `resp_terminate_${capturedRequests.length}`,
+          conversation: `conv_terminate_${capturedRequests.length}`,
+          output_text: "Terminate-aware answer",
+          metadata: { tool: "mcp" },
+        };
+      },
+    },
+  };
+
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "first turn" },
+    { sessionId: "chat-terminate" },
+  );
+  terminateSession({ sessionId: "chat-terminate" }, "test_cleanup");
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "new session after termination" },
+    { sessionId: "chat-terminate" },
+  );
+
+  assert.equal(capturedRequests[0].conversation, undefined);
+  assert.equal(capturedRequests[1].conversation, undefined);
+});
+
+test("octagon-agent stdio default session can be explicitly terminated", async () => {
+  const capturedRequests = [];
+  const client = {
+    responses: {
+      create: async request => {
+        capturedRequests.push(request);
+        return {
+          id: `resp_stdio_terminate_${capturedRequests.length}`,
+          conversation: `conv_stdio_terminate_${capturedRequests.length}`,
+          output_text: "Terminate stdio answer",
           metadata: { tool: "mcp" },
         };
       },
@@ -235,12 +421,16 @@ test("octagon-agent resetConversation clears the active threadKey anchor", async
 
   await executeOctagonAgentTool(client, {
     prompt: "first turn",
-    threadKey: "visible-chat-reset",
   });
+  terminateSession(
+    {
+      sessionId: getDefaultStdioSessionIdForTests(),
+      transportKind: "stdio",
+    },
+    "test_stdio_cleanup",
+  );
   await executeOctagonAgentTool(client, {
-    prompt: "reset thread",
-    threadKey: "visible-chat-reset",
-    resetConversation: true,
+    prompt: "second turn after termination",
   });
 
   assert.equal(capturedRequests[0].conversation, undefined);

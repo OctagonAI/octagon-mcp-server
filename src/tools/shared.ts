@@ -1,7 +1,5 @@
 import OpenAI from "openai";
 
-import { debugLog } from "../debug.js";
-
 type ResponseOutputTextLike = {
   type?: string;
   text?: string;
@@ -210,8 +208,6 @@ export async function createOctagonAgentResponse(
     ...(conversation ? { conversation } : {}),
   })) as OctagonResponseLike;
 
-  debugLog("octagon-agent raw Octagon response", response);
-
   const rawMetadata = normalizeMetadata(response.metadata);
   const text = extractResponseText(response);
 
@@ -223,8 +219,6 @@ export async function createOctagonAgentResponse(
     followUp: extractFollowUp(rawMetadata),
     rawMetadata,
   };
-
-  debugLog("octagon-agent parsed MCP response payload", parsedResponse);
 
   return parsedResponse;
 }

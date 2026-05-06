@@ -2,7 +2,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import OpenAI from "openai";
 import { z } from "zod";
 
-import { clearOctagonConversationForToolChange } from "../toolSessionState.js";
+import {
+  clearOctagonConversationForToolChange,
+  normalizeToolContext,
+  type SessionExtra,
+} from "../toolSessionState.js";
 import { createStreamingTextResponse, createTextErrorResult } from "#tools/shared";
 
 const AGENT_NAME = "octagon-prediction-markets-agent";
@@ -25,14 +29,10 @@ type Params = {
   cache: boolean | undefined;
 };
 
-type ToolExtra = {
-  sessionId?: string;
-};
-
 export async function executePredictionMarketsTool(
   client: OpenAI,
   { prompt, cache }: Params,
-  extra?: ToolExtra,
+  extra?: SessionExtra,
 ) {
   let model;
   if (cache === undefined) {
@@ -44,7 +44,7 @@ export async function executePredictionMarketsTool(
   }
 
   try {
-    clearOctagonConversationForToolChange(extra, AGENT_NAME);
+    clearOctagonConversationForToolChange(normalizeToolContext(extra), AGENT_NAME);
     const result = await createStreamingTextResponse(client, model, prompt);
     return {
       content: [{ type: "text" as const, text: result }],
@@ -63,7 +63,7 @@ export function registerTool(server: McpServer, client: OpenAI): void {
       name: string,
       description: string,
       inputSchema: Record<string, z.ZodTypeAny>,
-      callback: (args: Params, extra?: ToolExtra) => Promise<unknown>,
+      callback: (args: Params, extra?: SessionExtra) => Promise<unknown>,
     ) => unknown;
   };
 

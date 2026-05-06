@@ -2,7 +2,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import OpenAI from "openai";
 import { z } from "zod";
 
-import { clearOctagonConversationForToolChange } from "../toolSessionState.js";
+import {
+  clearOctagonConversationForToolChange,
+  normalizeToolContext,
+  type SessionExtra,
+} from "../toolSessionState.js";
 import { createStreamingTextResponse, createTextErrorResult } from "#tools/shared";
 
 const AGENT_NAME = "octagon-deep-research-agent";
@@ -21,17 +25,13 @@ type Params = {
   prompt: string;
 };
 
-type ToolExtra = {
-  sessionId?: string;
-};
-
 export async function executeDeepResearchTool(
   client: OpenAI,
   { prompt }: Params,
-  extra?: ToolExtra,
+  extra?: SessionExtra,
 ) {
   try {
-    clearOctagonConversationForToolChange(extra, AGENT_NAME);
+    clearOctagonConversationForToolChange(normalizeToolContext(extra), AGENT_NAME);
     const result = await createStreamingTextResponse(client, AGENT_NAME, prompt);
     return {
       content: [{ type: "text" as const, text: result }],
@@ -50,7 +50,7 @@ export function registerTool(server: McpServer, client: OpenAI): void {
       name: string,
       description: string,
       inputSchema: Record<string, z.ZodTypeAny>,
-      callback: (args: Params, extra?: ToolExtra) => Promise<unknown>,
+      callback: (args: Params, extra?: SessionExtra) => Promise<unknown>,
     ) => unknown;
   };
 

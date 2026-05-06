@@ -30,6 +30,7 @@ async function main() {
       packageName: PACKAGE_NAME,
       version: VERSION,
       debugEnabled: OCTAGON_MCP_DEBUG,
+      transportKind: "stdio",
     });
 
     registerMcpTools(server, octagonClient);

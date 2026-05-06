@@ -5,10 +5,11 @@ import { z } from "zod";
 import { debugLog } from "../debug.js";
 import {
   clearOctagonConversation,
-  getStoredOctagonConversation,
-  resolveThreadAnchor,
+  getSessionState,
+  normalizeToolContext,
+  resolveSessionAnchor,
   storeOctagonConversation,
-  type ToolContext,
+  type SessionExtra,
 } from "../toolSessionState.js";
 import { createOctagonAgentResponse, createTextErrorResult } from "#tools/shared";
 
@@ -26,17 +27,11 @@ const octagonAgentInputShape = {
     .describe(
       "Existing Octagon conversation ID to continue a prior octagon-agent thread. Omit on the first turn.",
     ),
-  threadKey: z
-    .string()
-    .optional()
-    .describe(
-      "Logical visible chat/thread identifier to reuse octagon-agent conversation when MCP transport does not provide a session id.",
-    ),
-  resetConversation: z
+  newConversation: z
     .boolean()
     .optional()
     .describe(
-      "If true, drop any stored octagon-agent thread for the active session/thread anchor before processing the request.",
+      "If true, start a fresh Octagon conversation for the active session. Top-layer agents should pass this on the first turn of a new user chat.",
     ),
 };
 
@@ -64,54 +59,106 @@ export const octagonAgentOutputSchema = z.object({
 type Params = {
   prompt: string;
   conversation?: string;
-  threadKey?: string;
-  resetConversation?: boolean;
+  newConversation?: boolean;
 };
+
+const CONFLICTING_CONTINUATION_ERROR =
+  "Error: octagon-agent request cannot include both conversation and newConversation. Use conversation to continue an existing thread, or newConversation to start a fresh one.";
+const MISSING_SESSION_ERROR =
+  "Error: octagon-agent requires session continuity. Provide MCP transport session identity, rely on the stdio session, or explicitly continue with conversation.";
 
 export async function executeOctagonAgentTool(
   client: OpenAI,
-  { prompt, conversation, threadKey, resetConversation }: Params,
-  extra?: ToolContext,
+  { prompt, conversation, newConversation }: Params,
+  extra?: SessionExtra,
 ) {
   try {
-    const threadContext = {
-      sessionId: extra?.sessionId,
-      threadKey,
-    };
-    const threadAnchor = resolveThreadAnchor(threadContext);
-    const storedThreadState = getStoredOctagonConversation(threadContext);
-    const storedConversation = storedThreadState?.conversation;
+    const sessionContext = normalizeToolContext(extra);
+    const sessionAnchor = resolveSessionAnchor(sessionContext);
+    const storedSessionState = getSessionState(sessionContext);
+    const storedConversation = storedSessionState?.activeConversationId;
+    const effectiveReset = Boolean(newConversation);
+    const resetReason = newConversation ? "new_conversation_request" : null;
 
-    if (resetConversation) {
-      clearOctagonConversation(threadContext, "explicit_reset");
+    if (conversation && newConversation) {
+      debugLog("octagon-agent conflicting continuation arguments", {
+        prompt,
+        promptLength: prompt.length,
+        transportKind: sessionContext.transportKind,
+        sessionId: sessionContext.sessionId ?? null,
+        providedConversation: conversation,
+        newConversation: true,
+      });
+      return createTextErrorResult(CONFLICTING_CONTINUATION_ERROR);
+    }
+
+    if (!sessionAnchor && !conversation) {
+      debugLog("octagon-agent missing required session continuity", {
+        prompt,
+        promptLength: prompt.length,
+        transportKind: sessionContext.transportKind,
+        sessionId: sessionContext.sessionId ?? null,
+        anchorType: "none",
+        providedConversation: null,
+        storedConversation: null,
+        resolvedConversation: null,
+        hasConversation: false,
+        newConversation: Boolean(newConversation),
+        sessionResetApplied: false,
+        resetReason,
+        conversationSource: "new",
+        sessionRequired: true,
+        reuseBlockedReason:
+          sessionContext.transportKind === "stdio"
+            ? "missing_stdio_session"
+            : "missing_required_session_anchor",
+      });
+      return createTextErrorResult(MISSING_SESSION_ERROR);
+    }
+
+    if (effectiveReset) {
+      clearOctagonConversation(sessionContext, resetReason ?? "explicit_reset");
     }
 
     const resolvedConversation =
       conversation ??
-      (resetConversation ? undefined : storedConversation);
+      (effectiveReset ? undefined : storedConversation);
     const anchorType = conversation
       ? "provided_conversation"
-      : threadAnchor?.type ?? "none";
+      : sessionAnchor?.type ?? "none";
     const conversationSource = conversation
       ? "provided"
-      : resolvedConversation && threadAnchor?.type === "session"
-        ? "stored_session"
-        : resolvedConversation && threadAnchor?.type === "thread_key"
-          ? "stored_thread_key"
+      : resolvedConversation && sessionAnchor?.type === "transport_session"
+        ? "stored_transport_session"
+        : resolvedConversation && sessionAnchor?.type === "stdio_session"
+          ? "stored_stdio_session"
           : "new";
+    const sessionSource = sessionAnchor?.type ?? "none";
+    const sessionStateId = storedSessionState?.sessionId ?? sessionAnchor?.sessionId;
 
     debugLog("octagon-agent inbound MCP request", {
       prompt,
       promptLength: prompt.length,
-      sessionId: extra?.sessionId ?? null,
-      threadKey: threadKey ?? null,
+      transportKind: sessionContext.transportKind,
+      sessionId: sessionContext.sessionId ?? null,
+      sessionSource,
+      sessionStateId: sessionStateId ?? null,
       anchorType,
       providedConversation: conversation ?? null,
       storedConversation: storedConversation ?? null,
       resolvedConversation: resolvedConversation ?? null,
       hasConversation: Boolean(resolvedConversation),
-      resetConversation: Boolean(resetConversation),
+      newConversation: Boolean(newConversation),
+      sessionResetApplied: effectiveReset,
+      resetReason,
       conversationSource,
+      sessionRequired: !conversation,
+      reuseBlockedReason:
+        !sessionAnchor && !conversation
+          ? sessionContext.transportKind === "stdio"
+            ? "missing_stdio_session"
+            : "missing_required_session_anchor"
+          : null,
     });
 
     const result = await createOctagonAgentResponse(client, {
@@ -120,7 +167,7 @@ export async function executeOctagonAgentTool(
     });
 
     if (result.conversation) {
-      storeOctagonConversation(threadContext, {
+      storeOctagonConversation(sessionContext, {
         conversation: result.conversation,
         responseId: result.responseId,
       });
@@ -131,7 +178,14 @@ export async function executeOctagonAgentTool(
       structuredContent: result,
     };
 
-    debugLog("octagon-agent outbound MCP tool result", toolResult);
+    debugLog("octagon-agent outbound MCP tool result", {
+      model: result.model,
+      conversation: result.conversation ?? null,
+      responseId: result.responseId ?? null,
+      textLength: result.text.length,
+      hasFollowUp: Boolean(result.followUp),
+      metadataKeys: result.rawMetadata ? Object.keys(result.rawMetadata) : [],
+    });
 
     return toolResult;
   } catch (error) {
@@ -148,7 +202,7 @@ export function registerTool(server: McpServer, client: OpenAI): void {
       name: string,
       description: string,
       inputSchema: Record<string, z.ZodTypeAny>,
-      callback: (args: Params, extra?: ToolContext) => Promise<unknown>,
+      callback: (args: Params, extra?: SessionExtra) => Promise<unknown>,
     ) => unknown;
   };
 
@@ -157,12 +211,12 @@ export function registerTool(server: McpServer, client: OpenAI): void {
     AGENT_DESCRIPTION,
     octagonAgentInputShape,
     async (
-      { prompt, conversation, threadKey, resetConversation }: Params,
-      extra?: ToolContext,
+      { prompt, conversation, newConversation }: Params,
+      extra?: SessionExtra,
     ) =>
       executeOctagonAgentTool(
         client,
-        { prompt, conversation, threadKey, resetConversation },
+        { prompt, conversation, newConversation },
         extra,
       ),
   );
