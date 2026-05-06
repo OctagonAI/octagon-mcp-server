@@ -64,7 +64,7 @@ export function resolveSessionAnchor(
 ): SessionAnchor | undefined {
   if (context?.transportKind !== "stdio" && context?.sessionId) {
     return {
-      key: `session:${context.sessionId}`,
+      key: `transport_session:${context.sessionId}`,
       sessionId: context.sessionId,
       type: "transport_session",
     };
@@ -72,7 +72,7 @@ export function resolveSessionAnchor(
 
   if (context?.transportKind === "stdio" && context?.sessionId) {
     return {
-      key: `session:${context.sessionId}`,
+      key: `stdio_session:${context.sessionId}`,
       sessionId: context.sessionId,
       type: "stdio_session",
     };

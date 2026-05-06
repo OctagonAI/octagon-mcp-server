@@ -184,6 +184,49 @@ test("octagon-agent reuses stored conversation in a transport-backed session", a
   assert.equal(capturedRequests[1].conversation, "conv_transport_session");
 });
 
+test("octagon-agent isolates stdio and transport sessions even with the same sessionId", async () => {
+  const capturedRequests = [];
+  const client = {
+    responses: {
+      create: async request => {
+        capturedRequests.push(request);
+        return {
+          id: `resp_transport_isolation_${capturedRequests.length}`,
+          conversation: `conv_transport_isolation_${capturedRequests.length}`,
+          output_text: "Transport isolation answer",
+          metadata: { tool: "mcp" },
+        };
+      },
+    },
+  };
+
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "stdio first turn" },
+    { sessionId: "shared-session", transportKind: "stdio" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "http first turn" },
+    { sessionId: "shared-session", transportKind: "streamable_http" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "stdio follow up" },
+    { sessionId: "shared-session", transportKind: "stdio" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "http follow up" },
+    { sessionId: "shared-session", transportKind: "streamable_http" },
+  );
+
+  assert.equal(capturedRequests[0].conversation, undefined);
+  assert.equal(capturedRequests[1].conversation, undefined);
+  assert.equal(capturedRequests[2].conversation, "conv_transport_isolation_1");
+  assert.equal(capturedRequests[3].conversation, "conv_transport_isolation_2");
+});
+
 test("octagon-agent automatically uses the default stdio session when no anchor is provided", async () => {
   const capturedRequests = [];
   const client = {
@@ -451,7 +494,10 @@ test("octagon-agent session termination clears stored session state", async () =
     { prompt: "first turn" },
     { sessionId: "chat-terminate" },
   );
-  terminateSession({ sessionId: "chat-terminate" }, "test_cleanup");
+  terminateSession(
+    { sessionId: "chat-terminate", transportKind: "stdio" },
+    "test_cleanup",
+  );
   await executeOctagonAgentTool(
     client,
     { prompt: "new session after termination" },
