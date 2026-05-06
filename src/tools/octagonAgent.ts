@@ -79,6 +79,10 @@ export async function executeOctagonAgentTool(
   extra?: SessionExtra,
 ) {
   try {
+    const normalizedConversation =
+      typeof conversation === "string"
+        ? conversation.trim() || undefined
+        : undefined;
     const sessionContext = normalizeToolContext(extra);
     const sessionAnchor = resolveSessionAnchor(sessionContext);
     const storedSessionState = getSessionState(sessionContext);
@@ -87,18 +91,18 @@ export async function executeOctagonAgentTool(
     const resetReason = newConversation ? "new_conversation_request" : null;
     const promptSummary = summarizeDebugPrompt(prompt);
 
-    if (conversation && newConversation) {
+    if (normalizedConversation && newConversation) {
       debugLog("octagon-agent conflicting continuation arguments", {
         ...promptSummary,
         transportKind: sessionContext.transportKind,
         sessionId: summarizeDebugIdentifier(sessionContext.sessionId),
-        providedConversation: summarizeDebugIdentifier(conversation),
+        providedConversation: summarizeDebugIdentifier(normalizedConversation),
         newConversation: true,
       });
       return createTextErrorResult(CONFLICTING_CONTINUATION_ERROR);
     }
 
-    if (!sessionAnchor && !conversation) {
+    if (!sessionAnchor && !normalizedConversation) {
       debugLog("octagon-agent missing required session continuity", {
         ...promptSummary,
         transportKind: sessionContext.transportKind,
@@ -122,12 +126,12 @@ export async function executeOctagonAgentTool(
     }
 
     const resolvedConversation =
-      conversation ??
+      normalizedConversation ??
       (effectiveReset ? undefined : storedConversation);
-    const anchorType = conversation
+    const anchorType = normalizedConversation
       ? "provided_conversation"
       : sessionAnchor?.type ?? "none";
-    const conversationSource = conversation
+    const conversationSource = normalizedConversation
       ? "provided"
       : resolvedConversation && sessionAnchor?.type === "transport_session"
         ? "stored_transport_session"
@@ -144,7 +148,7 @@ export async function executeOctagonAgentTool(
       sessionSource,
       sessionStateId: summarizeDebugIdentifier(sessionStateId),
       anchorType,
-      providedConversation: summarizeDebugIdentifier(conversation),
+      providedConversation: summarizeDebugIdentifier(normalizedConversation),
       storedConversation: summarizeDebugIdentifier(storedConversation),
       resolvedConversation: summarizeDebugIdentifier(resolvedConversation),
       hasConversation: Boolean(resolvedConversation),
@@ -152,9 +156,9 @@ export async function executeOctagonAgentTool(
       sessionResetApplied: effectiveReset,
       resetReason,
       conversationSource,
-      sessionRequired: !conversation,
+      sessionRequired: !normalizedConversation,
       reuseBlockedReason:
-        !sessionAnchor && !conversation
+        !sessionAnchor && !normalizedConversation
           ? sessionContext.transportKind === "stdio"
             ? "missing_stdio_session"
             : "missing_required_session_anchor"

@@ -119,6 +119,37 @@ test("octagon-agent rejects blank conversation ids at the schema boundary", asyn
   );
 });
 
+test("octagon-agent trims blank direct conversation input to stored session state", async () => {
+  const capturedRequests = [];
+  const client = {
+    responses: {
+      create: async request => {
+        capturedRequests.push(request);
+        return {
+          id: `resp_blank_direct_${capturedRequests.length}`,
+          conversation: "conv_blank_direct",
+          output_text: "Blank direct conversation answer",
+          metadata: { tool: "mcp" },
+        };
+      },
+    },
+  };
+
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "first turn" },
+    { sessionId: "chat-blank-direct" },
+  );
+  await executeOctagonAgentTool(
+    client,
+    { prompt: "follow up", conversation: "   " },
+    { sessionId: "chat-blank-direct" },
+  );
+
+  assert.equal(capturedRequests[0].conversation, undefined);
+  assert.equal(capturedRequests[1].conversation, "conv_blank_direct");
+});
+
 test("octagon-agent reuses stored conversation in the same transport session", async () => {
   const capturedRequests = [];
   const client = {
