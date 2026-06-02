@@ -26,7 +26,7 @@
       "type": "string",
       "title": "Octagon API key",
       "description": "API key used for Octagon agent and prediction market tool calls.",
-      "sensitive": false,
+      "sensitive": true,
       "required": true
     },
     "api_base_url": {

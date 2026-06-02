@@ -75,6 +75,56 @@ test("docs read tool reads cached corpus content", async () => {
   assert.equal(result.structuredContent.truncated, false);
 });
 
+test("docs service expires cached reads when catalog refreshes", async () => {
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls += 1;
+    const connectorText =
+      calls === 1 ? "first connector text" : "second connector text";
+
+    return new Response(
+      `# Octagon AI
+
+## Octagon Claude Plugin
+
+The Octagon Claude Plugin uses ${connectorText}.
+`,
+      {
+        status: 200,
+        headers: { "content-type": "text/markdown" },
+      },
+    );
+  };
+
+  const service = new OctagonDocsService({
+    primaryIndexUrl: "https://octagonai.co/docs/llms.txt",
+    cacheTtlMs: -1,
+  });
+
+  const first = await service.read({
+    target: "Octagon Claude Plugin",
+    maxChars: 2000,
+  });
+  const second = await service.read({
+    target: "Octagon Claude Plugin",
+    maxChars: 2000,
+  });
+
+  assert.match(first.markdown, /first connector text/);
+  assert.match(second.markdown, /second connector text/);
+  assert.equal(calls, 2);
+});
+
+test("docs read tool handles malformed percent-encoded targets", async () => {
+  const result = await executeDocsReadTool(createMockedService(), {
+    target: "50%",
+    maxChars: 2000,
+  });
+
+  assert.equal(result.isError, true);
+  assert.match(result.content[0].text, /No Octagon docs page matched/);
+});
+
 test("docs read tool fetches direct docs URLs even when not cataloged", async () => {
   globalThis.fetch = async url => {
     if (String(url) === "https://octagonai.co/docs/llms.txt") {

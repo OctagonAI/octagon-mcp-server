@@ -147,6 +147,8 @@ export class OctagonDocsService {
     source?: DocsSource | "all";
     preferCachedContent?: boolean;
   }): Promise<DocsReadResult> {
+    const catalogs = await this.getCatalog({ includeSite: source === "all" });
+
     const normalizedMaxChars = Math.max(
       1_000,
       Math.min(50_000, Math.floor(maxChars ?? DOCS_DEFAULT_MAX_CHARS)),
@@ -157,7 +159,7 @@ export class OctagonDocsService {
       return cached;
     }
 
-    const entries = (await this.getEntries(source === "all")).filter(entry =>
+    const entries = catalogs.flatMap(catalog => catalog.entries).filter(entry =>
       source === "all" ? true : entry.source === source,
     );
     const matchingEntries = entries.filter(candidate =>
@@ -242,6 +244,7 @@ export class OctagonDocsService {
       catalog,
       expiresAtMs: Date.now() + this.options.cacheTtlMs,
     });
+    this.readCache.clear();
 
     return catalog;
   }

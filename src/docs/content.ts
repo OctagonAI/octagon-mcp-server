@@ -108,7 +108,12 @@ function modernizeDocsUrl(url: URL): string | undefined {
 
 function canonicalTargetValues(value: string): string[] {
   const normalized = value.trim().toLowerCase();
-  const decoded = decodeURIComponent(normalized);
+  let decoded = normalized;
+  try {
+    decoded = decodeURIComponent(normalized);
+  } catch {
+    // Keep the raw value when the user supplies malformed percent-encoding.
+  }
   const values = new Set([normalized, decoded]);
 
   try {

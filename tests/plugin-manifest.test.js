@@ -23,7 +23,7 @@ test("plugin manifest exposes the bundled MCP runtime and required config", () =
   assert.equal(pluginManifest.mcpServers, "./.claude-plugin/mcp.json");
   assert.ok(!("hooks" in pluginManifest));
   assert.equal(pluginManifest.userConfig.api_key.required, true);
-  assert.equal(pluginManifest.userConfig.api_key.sensitive, false);
+  assert.equal(pluginManifest.userConfig.api_key.sensitive, true);
   assert.equal(
     pluginManifest.userConfig.api_base_url.default,
     "https://api.octagonagents.com/v1",
