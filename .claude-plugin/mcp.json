@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "octagon-mcp": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/dist/plugin-runtime.cjs"
+      ],
+      "env": {
+        "OCTAGON_API_KEY": "${user_config.api_key}",
+        "OCTAGON_API_BASE_URL": "${user_config.api_base_url}"
+      }
+    }
+  }
+}

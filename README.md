@@ -2,9 +2,9 @@
 
 [![smithery badge](https://smithery.ai/badge/@OctagonAI/octagon-mcp-server)](https://smithery.ai/server/@OctagonAI/octagon-mcp-server)
 
-![Favicon](https://docs.octagonagents.com/logo.svg) The Octagon MCP server provides specialized AI-powered financial research and analysis by integrating with the Octagon Market Intelligence API, enabling users to analyze and extract insights from public filings, earnings calls, financial metrics, private market transactions, and prediction market events within Claude Desktop and other popular MCP clients.
+![Favicon](https://octagonai.co/docs/logo.svg) The Octagon MCP server provides specialized AI-powered financial research and analysis by integrating with the Octagon Market Intelligence API, enabling users to analyze and extract insights from public filings, earnings calls, financial metrics, private market transactions, and prediction market events within Claude Desktop and other popular MCP clients.
 
-[![Demo](https://docs.octagonagents.com/financial_model_demo_fast.gif)](https://docs.octagonagents.com/financial_model_demo.mp4)
+[![Demo](https://octagonai.co/docs/financial_model_demo_fast.gif)](https://octagonai.co/docs/financial_model_demo.mp4)
 
 ## Tools
 
@@ -22,6 +22,11 @@
 
 - `octagon-prediction-markets-agent` for Kalshi event research reports
 - `prediction_markets_history` for structured historical market data retrieval
+
+✅ Live Octagon documentation access
+
+- `octagon-docs-search`, `octagon-docs-read`, `octagon-docs-list`, and `octagon-docs-refresh`
+- MCP resources for `octagon-docs://catalog`, `octagon-docs://status`, and `octagon-docs://page/{target}`
 
 ## Get Your Octagon API Key
 
@@ -134,7 +139,7 @@ npm install -g octagon-mcp
 ## Documentation
 
 For comprehensive documentation on using Octagon agents, please visit our official documentation at:
-[https://docs.octagonagents.com](https://docs.octagonagents.com)
+[https://octagonai.co/docs/](https://octagonai.co/docs/)
 
 The documentation includes:
 
@@ -145,11 +150,80 @@ The documentation includes:
 
 For the latest hosted MCP client setup guide, see:
 
-- [Octagon MCP Server Guide](https://docs.octagonagents.com/guide/mcp-server.html)
+- [Octagon MCP Server Guide](https://octagonai.co/docs/guide/mcp-server)
+- [Octagon Claude Plugin Guide](https://octagonai.co/docs/guide/claude-plugin)
+- [Octagon Agents Guide](https://octagonai.co/docs/guide/agents/)
+
+This MCP server also exposes the live docs corpus directly to MCP clients. Documentation access is fetched from the public Octagon docs LLM entry point at `https://octagonai.co/docs/llms.txt`; it does not use or transmit `OCTAGON_API_KEY`.
 
 ## Available Tools
 
 The MCP server currently exposes the following tools:
+
+### Documentation Tools
+
+These tools expose live Octagon docs inside the MCP session. They work even before `OCTAGON_API_KEY` is configured, which makes them useful for setup, troubleshooting, and discovering the right Octagon agent or API workflow.
+
+#### `octagon-docs-list`
+
+Lists live docs sections and pages from the Octagon docs corpus.
+
+**Parameters**
+
+- `section` (string, optional): filter by docs section.
+- `source` (`docs`, `site`, or `all`, optional): defaults to the docs corpus.
+- `limit` (number, optional): maximum entries to return.
+
+#### `octagon-docs-search`
+
+Searches the Octagon API, agent, MCP, and plugin docs with source URLs and optional snippets.
+
+**Parameters**
+
+- `query` (string, required): search query.
+- `section` (string, optional): filter by docs section.
+- `source` (`docs`, `site`, or `all`, optional): defaults to the docs corpus.
+- `limit` (number, optional): maximum results to return.
+- `includeSnippets` (boolean, optional): include matched snippets in results.
+
+Example:
+
+```text
+Search Octagon docs for Claude plugin connector setup.
+```
+
+#### `octagon-docs-read`
+
+Reads one docs page or section as Markdown by title, URL, path, or catalog id.
+
+**Parameters**
+
+- `target` (string, required): docs title, URL, path, or catalog id.
+- `source` (`docs`, `site`, or `all`, optional): defaults to the docs corpus.
+- `maxChars` (number, optional): maximum Markdown characters to return.
+- `preferCachedContent` (boolean, optional): use the indexed docs corpus when available.
+
+Example:
+
+```text
+Read the Octagon MCP server guide.
+```
+
+#### `octagon-docs-refresh`
+
+Refreshes the in-memory docs catalog from the live LLM-friendly docs endpoints.
+
+**Parameters**
+
+- `includeSite` (boolean, optional): also refresh the broader `https://octagonai.co/llms.txt` site index.
+
+### Documentation Resources
+
+Clients that support MCP resources can also browse:
+
+- `octagon-docs://catalog`: normalized live docs catalog.
+- `octagon-docs://status`: cache state, source endpoints, and refresh metadata.
+- `octagon-docs://page/{target}`: one docs page or section as Markdown.
 
 ### `octagon-agent`
 

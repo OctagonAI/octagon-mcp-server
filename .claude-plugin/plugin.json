@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "octagon-market-intelligence",
+  "version": "1.1.0",
+  "description": "Skills-first Claude Code plugin for Octagon market intelligence, prediction market research, and financial analysis workflows.",
+  "author": {
+    "name": "Octagon AI",
+    "url": "https://github.com/OctagonAI/octagon-mcp-server"
+  },
+  "homepage": "https://docs.octagonagents.com",
+  "repository": "https://github.com/OctagonAI/octagon-mcp-server",
+  "license": "MIT",
+  "keywords": [
+    "octagon",
+    "finance",
+    "market-intelligence",
+    "prediction-markets",
+    "claude-code"
+  ],
+  "agents": [
+    "./agents/octagon-research-orchestrator.md"
+  ],
+  "mcpServers": "./.claude-plugin/mcp.json",
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "Octagon API key",
+      "description": "API key used for Octagon agent and prediction market tool calls.",
+      "sensitive": true,
+      "required": true
+    },
+    "api_base_url": {
+      "type": "string",
+      "title": "Octagon API base URL",
+      "description": "Optional override for staging, private environments, or self-hosted Octagon API deployments.",
+      "default": "https://api.octagonagents.com/v1"
+    }
+  }
+}

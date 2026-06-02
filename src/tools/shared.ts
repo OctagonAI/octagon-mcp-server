@@ -229,3 +229,9 @@ export function createTextErrorResult(message: string) {
     content: [{ type: "text" as const, text: message }],
   };
 }
+
+export function createMissingApiKeyResult() {
+  return createTextErrorResult(
+    "Error: OCTAGON_API_KEY is not set. Configure OCTAGON_API_KEY to use Octagon API-backed tools. Documentation tools remain available without an API key.",
+  );
+}
