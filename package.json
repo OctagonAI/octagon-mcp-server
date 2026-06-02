@@ -22,7 +22,12 @@
     "octagon-mcp": "dist/index.js"
   },
   "files": [
-    "dist"
+    ".claude-plugin",
+    "agents",
+    "dist",
+    "hooks",
+    "scripts",
+    "skills"
   ],
   "publishConfig": {
     "access": "public"
@@ -30,7 +35,7 @@
   "scripts": {
     "prebuild": "node scripts/write-version.mjs",
     "build": "tsc && node -e \"require('fs').chmodSync('dist/index.js', '755')\"",
-    "test": "npm run build && node --test tests/octagon-agent-threading.test.js",
+    "test": "npm run build && node --test tests/*.test.js",
     "start": "node dist/index.js",
     "lint": "echo \"No linting configured\"",
     "format": "echo \"No formatting configured\"",

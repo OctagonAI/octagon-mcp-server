@@ -4,7 +4,9 @@ import createClient from "#client";
 import { registerMcpTools } from "#tools";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import OpenAI from "openai";
 import { OCTAGON_MCP_DEBUG, debugLog } from "./debug.js";
+import { registerDocs } from "./docs/index.js";
 import { VERSION } from "./version.js";
 
 const PACKAGE_NAME = "octagon-mcp";
@@ -20,11 +22,21 @@ async function main() {
       version: VERSION,
     });
 
-    const octagonClient = createClient({
-      defaultHeaders: {
-        "User-Agent": `${PACKAGE_NAME}/${VERSION} (Node.js/${process.versions.node})`,
-      },
-    });
+    let octagonClient: OpenAI | null = null;
+    try {
+      octagonClient = createClient({
+        defaultHeaders: {
+          "User-Agent": `${PACKAGE_NAME}/${VERSION} (Node.js/${process.versions.node})`,
+        },
+      });
+    } catch (error) {
+      console.error(
+        "Warning: OCTAGON_API_KEY is not set. Octagon API-backed tools will return a configuration error, but documentation tools remain available.",
+      );
+      debugLog("Octagon API client unavailable", {
+        reason: error instanceof Error ? error.message : String(error),
+      });
+    }
 
     debugLog("MCP server starting", {
       packageName: PACKAGE_NAME,
@@ -33,6 +45,7 @@ async function main() {
       transportKind: "stdio",
     });
 
+    registerDocs(server);
     registerMcpTools(server, octagonClient);
 
     transport = new StdioServerTransport();

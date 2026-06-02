@@ -3,6 +3,7 @@ import OpenAI, { APIError } from "openai";
 import { z } from "zod";
 
 import { type SessionExtra } from "../toolSessionState.js";
+import { createMissingApiKeyResult } from "#tools/shared";
 
 const TOOL_NAME = "prediction_markets_history";
 const TOOL_DESCRIPTION = `Fetch historical data for a prediction market event by ticker.
@@ -116,7 +117,7 @@ export async function executePredictionMarketsHistoryTool(
   }
 }
 
-export function registerTool(server: McpServer, client: OpenAI): void {
+export function registerTool(server: McpServer, client: OpenAI | null): void {
   const toolServer = server as unknown as {
     tool: (
       name: string,
@@ -131,10 +132,12 @@ export function registerTool(server: McpServer, client: OpenAI): void {
     TOOL_DESCRIPTION,
     predictionMarketsHistoryInputShape,
     async (params, extra) =>
-      executePredictionMarketsHistoryTool(
-        client as PredictionMarketsHistoryClient,
-        params,
-        extra,
-      ),
+      client
+        ? executePredictionMarketsHistoryTool(
+            client as PredictionMarketsHistoryClient,
+            params,
+            extra,
+          )
+        : Promise.resolve(createMissingApiKeyResult()),
   );
 }

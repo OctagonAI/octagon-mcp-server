@@ -15,7 +15,11 @@ import {
   storeOctagonConversation,
   type SessionExtra,
 } from "../toolSessionState.js";
-import { createOctagonAgentResponse, createTextErrorResult } from "#tools/shared";
+import {
+  createMissingApiKeyResult,
+  createOctagonAgentResponse,
+  createTextErrorResult,
+} from "#tools/shared";
 
 const AGENT_NAME = "octagon-agent";
 const AGENT_DESCRIPTION =
@@ -204,7 +208,7 @@ export async function executeOctagonAgentTool(
   }
 }
 
-export function registerTool(server: McpServer, client: OpenAI): void {
+export function registerTool(server: McpServer, client: OpenAI | null): void {
   const toolServer = server as unknown as {
     tool: (
       name: string,
@@ -222,10 +226,12 @@ export function registerTool(server: McpServer, client: OpenAI): void {
       { prompt, conversation, newConversation }: Params,
       extra?: SessionExtra,
     ) =>
-      executeOctagonAgentTool(
-        client,
-        { prompt, conversation, newConversation },
-        extra,
-      ),
+      client
+        ? executeOctagonAgentTool(
+            client,
+            { prompt, conversation, newConversation },
+            extra,
+          )
+        : Promise.resolve(createMissingApiKeyResult()),
   );
 }

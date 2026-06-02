@@ -3,7 +3,11 @@ import OpenAI from "openai";
 import { z } from "zod";
 
 import { type SessionExtra } from "../toolSessionState.js";
-import { createStreamingTextResponse, createTextErrorResult } from "#tools/shared";
+import {
+  createMissingApiKeyResult,
+  createStreamingTextResponse,
+  createTextErrorResult,
+} from "#tools/shared";
 
 const AGENT_NAME = "octagon-prediction-markets-agent";
 const AGENT_DESCRIPTION =
@@ -52,7 +56,7 @@ export async function executePredictionMarketsTool(
   }
 }
 
-export function registerTool(server: McpServer, client: OpenAI): void {
+export function registerTool(server: McpServer, client: OpenAI | null): void {
   const toolServer = server as unknown as {
     tool: (
       name: string,
@@ -66,6 +70,9 @@ export function registerTool(server: McpServer, client: OpenAI): void {
     AGENT_NAME,
     AGENT_DESCRIPTION,
     predictionMarketsInputShape,
-    async (args, extra) => executePredictionMarketsTool(client, args, extra),
+    async (args, extra) =>
+      client
+        ? executePredictionMarketsTool(client, args, extra)
+        : Promise.resolve(createMissingApiKeyResult()),
   );
 }
