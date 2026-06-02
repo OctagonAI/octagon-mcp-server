@@ -29,6 +29,15 @@ const docsWithLegacyLinks = `# Octagon AI
 - [Available Agents](https://docs.octagonagents.com/docs/guide/agents.html.md): Agent capabilities and model selection.
 `;
 
+const docsWithGettingStarted = `# Octagon AI
+
+# How Octagon API Works
+
+## Getting Started with Code Examples
+
+Use the OpenAI-compatible Octagon API with your Octagon API key.
+`;
+
 test.afterEach(() => {
   globalThis.fetch = originalFetch;
 });
@@ -73,6 +82,28 @@ test("docs read tool reads cached corpus content", async () => {
 
   assert.match(result.content[0].text, /Octagon AI connector/);
   assert.equal(result.structuredContent.truncated, false);
+});
+
+test("docs read tool accepts list display labels with section names", async () => {
+  globalThis.fetch = async () =>
+    new Response(docsWithGettingStarted, {
+      status: 200,
+      headers: { "content-type": "text/markdown" },
+    });
+
+  const service = new OctagonDocsService({
+    primaryIndexUrl: "https://octagonai.co/docs/llms.txt",
+  });
+  const result = await executeDocsReadTool(service, {
+    target: "Getting Started with Code Examples (How Octagon API Works)",
+    maxChars: 2000,
+  });
+
+  assert.match(result.content[0].text, /OpenAI-compatible Octagon API/);
+  assert.equal(
+    result.structuredContent.entry.title,
+    "Getting Started with Code Examples",
+  );
 });
 
 test("docs service expires cached reads when catalog refreshes", async () => {

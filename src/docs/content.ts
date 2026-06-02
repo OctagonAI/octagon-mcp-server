@@ -154,6 +154,9 @@ export function contentMatchesTarget(
   const values = [
     entry.id,
     entry.title,
+    `${entry.title} (${entry.section})`,
+    `${entry.title} - ${entry.section}`,
+    `${entry.title} — ${entry.section}`,
     entry.url,
     entry.path,
     entry.path.replace(/^\/docs/, ""),

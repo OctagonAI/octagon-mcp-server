@@ -23,6 +23,14 @@ Use this skill for broad investment research requests that span several analyst 
 
 If the request is still broad after routing, use `octagon-agent`.
 
+## Docs references
+
+Use the live docs tools when the user asks about setup, available capabilities, or how Octagon works before starting analysis:
+
+- Start with `octagon-docs-search` for discovery: `Claude plugin`, `MCP server`, `available agents`, or `authentication`
+- Use `octagon-docs-read` for canonical context: `Octagon Claude Plugin`, `Octagon MCP Server`, `Octagon Agents Guide`, or `How Octagon API Works`
+- Prefer docs context over memory for installation, connector, authentication, and tool-surface questions
+
 ## Default query pattern
 
 ```text
