@@ -11,7 +11,7 @@
 ✅ `octagon-agent` orchestrates broad market intelligence analysis
 
 - Public market insights: SEC filings (10-K, 10-Q, 20-F, 8-K, S-1, 13-F, DEF 14A), earnings call transcripts
-- Stocks & crypto data: stock trading, crypto trading data
+- Stocks & crypto market data: stock trading, crypto trading data, news, press release, ownerships and holdings
 
 ✅ `octagon-deep-research-agent` for comprehensive deep research
 
