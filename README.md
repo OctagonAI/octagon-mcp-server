@@ -1,4 +1,4 @@
-# Octagon: MCP for Market Data
+# Octagon: MCP for Public & Prediction Markets Intelligence
 
 [![smithery badge](https://smithery.ai/badge/@OctagonAI/octagon-mcp-server)](https://smithery.ai/server/@OctagonAI/octagon-mcp-server)
 
