@@ -23,7 +23,7 @@ import {
 
 const AGENT_NAME = "octagon-agent";
 const AGENT_DESCRIPTION =
-  "Orchestrates all agents for comprehensive market intelligence analysis. Capabilities: Combines insights from SEC filings, earnings calls, financial metrics, stock data, institutional holdings, private company research, funding analysis, M&A transactions, investor intelligence, and debt analysis to provide holistic market intelligence. Best for: Complex research requiring multiple data sources and comprehensive analysis across public and private markets.";
+  "Orchestrates all agents for comprehensive market intelligence analysis. Capabilities: Combines insights from SEC filings, earnings calls, financial metrics, stock data, institutional holdings, private company research, funding analysis, M&A transactions, investor intelligence, debt analysis, and news and press releases to provide holistic market intelligence. Best for: Complex research requiring multiple data sources and comprehensive analysis across public and private markets.";
 
 const octagonAgentInputShape = {
   prompt: z
