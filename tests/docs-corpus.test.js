@@ -29,7 +29,7 @@ The Octagon API is built to be compatible with the OpenAI API format.
 
 ## API Documentation
 
-- [Authentication Guide](https://docs.octagonagents.com/docs/guide/rest-api/authentication.html.md): This section walks through the authentication process.
+- [Authentication Guide](https://octagonai.co/docs/guide/rest-api/authentication): This section walks through the authentication process.
 `,
     },
     { source: "docs" },

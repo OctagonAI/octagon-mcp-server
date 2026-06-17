@@ -8,7 +8,7 @@ type ClientOptions = Omit<OpenAIClientOptions, "apiKey" | "baseURL">;
 
 const OCTAGON_API_KEY = process.env.OCTAGON_API_KEY;
 const OCTAGON_API_BASE_URL =
-  process.env.OCTAGON_API_BASE_URL || "https://api.octagonagents.com/v1";
+  process.env.OCTAGON_API_BASE_URL || "https://api.octagonai.co/v1";
 
 // Initialize OpenAI client with Octagon API
 const createClient = (options: ClientOptions) => {

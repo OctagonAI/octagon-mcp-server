@@ -7,7 +7,7 @@
     "name": "Octagon AI",
     "url": "https://github.com/OctagonAI/octagon-mcp-server"
   },
-  "homepage": "https://docs.octagonagents.com",
+  "homepage": "https://octagonai.co/docs",
   "repository": "https://github.com/OctagonAI/octagon-mcp-server",
   "license": "MIT",
   "keywords": [
@@ -33,7 +33,7 @@
       "type": "string",
       "title": "Octagon API base URL",
       "description": "Optional override for staging, private environments, or self-hosted Octagon API deployments.",
-      "default": "https://api.octagonagents.com/v1"
+      "default": "https://api.octagonai.co/v1"
     }
   }
 }

@@ -11,8 +11,8 @@ const fetched = {
 
 ## API Documentation
 
-- [Authentication Guide](https://docs.octagonagents.com/docs/guide/rest-api/authentication.html.md): API key setup.
-- [Responses API](/docs/guide/rest-api/responses.html.md): Structured responses.
+- [Authentication Guide](https://octagonai.co/docs/guide/rest-api/authentication): API key setup.
+- [Responses API](https://octagonai.co/docs/guide/rest-api/responses): Structured responses.
 
 ## Claude Plugin
 
@@ -40,7 +40,7 @@ test("parseDocsCatalog normalizes relative links against source URL", () => {
 
   assert.equal(
     responses?.url,
-    "https://octagonai.co/docs/guide/rest-api/responses.html.md",
+    "https://octagonai.co/docs/guide/rest-api/responses",
   );
 });
 
