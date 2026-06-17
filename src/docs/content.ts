@@ -90,7 +90,7 @@ function candidateMarkdownUrls(url: string): string[] {
 function modernizeDocsUrl(url: URL): string | undefined {
   let pathname = url.pathname;
 
-  if (url.hostname === "docs.octagonagents.com") {
+  if (url.hostname === "docs.octagonai.co") {
     pathname = pathname.replace(/^\/docs/, "");
   }
 

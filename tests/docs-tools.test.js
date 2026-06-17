@@ -26,7 +26,7 @@ const docsWithLegacyLinks = `# Octagon AI
 
 ## API Documentation
 
-- [Available Agents](https://docs.octagonagents.com/docs/guide/agents.html.md): Agent capabilities and model selection.
+- [Available Agents](https://octagonai.co/docs/guide/agents): Agent capabilities and model selection.
 `;
 
 const docsWithGettingStarted = `# Octagon AI

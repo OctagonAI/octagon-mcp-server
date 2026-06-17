@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import test from "node:test";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -26,7 +26,7 @@ test("plugin manifest exposes the bundled MCP runtime and required config", () =
   assert.equal(pluginManifest.userConfig.api_key.sensitive, true);
   assert.equal(
     pluginManifest.userConfig.api_base_url.default,
-    "https://api.octagonagents.com/v1",
+    "https://api.octagonai.co/v1",
   );
 
   assert.deepEqual(mcpConfig.mcpServers["octagon-mcp"], {

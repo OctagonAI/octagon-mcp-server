@@ -5,7 +5,6 @@ export const DOCS_ALLOWED_HOSTS = new Set([
   "octagonai.co",
   "www.octagonai.co",
   "docs.octagonai.co",
-  "docs.octagonagents.com",
 ]);
 
 export const DOCS_DEFAULT_TIMEOUT_MS = 10_000;
