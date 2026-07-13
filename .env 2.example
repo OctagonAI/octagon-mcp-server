@@ -1,0 +1,5 @@
+# Octagon API Key
+OCTAGON_API_KEY=your_octagon_api_key_here
+
+# Base URL for Octagon API
+OCTAGON_API_BASE_URL=https://api.octagonagents.com/v1 
