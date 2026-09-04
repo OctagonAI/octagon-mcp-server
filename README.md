@@ -1,6 +1,6 @@
 # Octagon: MCP for Public & Prediction Markets Intelligence
 
-[![smithery badge](https://smithery.ai/badge/@OctagonAI/octagon-mcp-server)](https://smithery.ai/server/@OctagonAI/octagon-mcp-server)
+[![LightNow](https://lightnow.ai/badge/io.github.octagonai/octagon-mcp-server)](https://lightnow.ai/servers/io.github.octagonai/octagon-mcp-server)
 
 ![Favicon](https://octagonai.co/docs/logo.svg) The Octagon MCP server provides specialized AI-powered financial research and analysis by integrating with the Octagon Market Intelligence API, enabling users to analyze and extract insights from public filings, earnings calls, financial metrics, stocks & crypto data, stock news, and prediction markets news & research within Claude Desktop and other popular MCP clients.
 
