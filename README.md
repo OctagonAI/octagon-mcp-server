@@ -18,6 +18,11 @@
 - Multi-source synthesis for investment research questions
 - Best for up-to-date, cross-source thematic analysis
 
+✅ `octagon-podcasts-agent` for what investors said on podcasts
+
+- Cited answers from 70+ finance and business shows (Bloomberg, All-In, Odd Lots, Invest Like the Best, …)
+- Filters by time window, show, host, guest, company or ticker read from the question
+
 ✅ Prediction market research tooling
 
 - `octagon-prediction-markets-agent` for updated research reports on each prediction markets
@@ -347,6 +352,27 @@ More examples:
 - "Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins"
 - "Retrieve historical Bitcoin price data from 2023 and analyze the price volatility trends"
 - "Analyze the competitive dynamics in the EV charging infrastructure market"
+
+### `octagon-podcasts-agent`
+
+Answers questions from what investors, strategists, operators and guests said on finance and business podcasts. Every claim cites the episode (show, title, date, link), and the answer ends with a `Sources:` list. Earnings calls are not podcasts: use `octagon-agent` for those.
+
+**Parameters**
+
+- `prompt` (string, required): natural language question. Put the time window, show, host, guest, company or ticker in the question; there are no separate filter parameters.
+
+Example:
+
+```text
+What are podcast guests saying about NVDA since August?
+```
+
+More examples:
+
+- "What did Chamath say about AI capex on All-In recently?"
+- "Summarize the last 3 episodes of Odd Lots."
+- "Which companies were podcasts discussing most last week?"
+- "How has podcast sentiment on Fed rate cuts changed since September?"
 
 ### `octagon-prediction-markets-agent`
 
