@@ -178,13 +178,17 @@ export async function createStreamingTextResponse(
   client: OpenAI,
   model: string,
   prompt: string,
+  signal?: AbortSignal,
 ): Promise<string> {
-  const response = await client.responses.create({
-    model,
-    input: prompt,
-    stream: true,
-    metadata: { tool: "mcp" },
-  });
+  const response = await client.responses.create(
+    {
+      model,
+      input: prompt,
+      stream: true,
+      metadata: { tool: "mcp" },
+    },
+    { signal },
+  );
 
   return await processStreamingResponse(response);
 }

@@ -27,13 +27,14 @@ type Params = {
   prompt: string;
 };
 
+/** Ask octagon-podcasts-agent; cancelling the MCP request aborts the upstream API call. */
 export async function executePodcastsTool(
   client: OpenAI,
   { prompt }: Params,
   extra?: SessionExtra,
 ) {
   try {
-    const result = await createStreamingTextResponse(client, AGENT_NAME, prompt);
+    const result = await createStreamingTextResponse(client, AGENT_NAME, prompt, extra?.signal);
     return {
       content: [{ type: "text" as const, text: result }],
     };
@@ -45,21 +46,21 @@ export async function executePodcastsTool(
   }
 }
 
+/** Register the tool with its strict schema, so unknown arguments are rejected rather than stripped. */
 export function registerTool(server: McpServer, client: OpenAI | null): void {
+  // Narrow cast, as the other tools do: the SDK's generic signature is too deep for tsc here.
   const toolServer = server as unknown as {
-    tool: (
+    registerTool: (
       name: string,
-      description: string,
-      inputSchema: Record<string, z.ZodTypeAny>,
+      config: { description: string; inputSchema: z.ZodTypeAny },
       callback: (args: Params, extra?: SessionExtra) => Promise<unknown>,
     ) => unknown;
   };
 
-  toolServer.tool(
+  toolServer.registerTool(
     AGENT_NAME,
-    AGENT_DESCRIPTION,
-    podcastsInputShape,
-    async (args, extra) =>
+    { description: AGENT_DESCRIPTION, inputSchema: podcastsInputSchema },
+    async (args: Params, extra?: SessionExtra) =>
       client
         ? executePodcastsTool(client, args, extra)
         : Promise.resolve(createMissingApiKeyResult()),
