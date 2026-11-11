@@ -40,6 +40,7 @@ Choose the narrowest useful Octagon workflow first:
 
 - Prefer `octagon-agent` for broad market-intelligence questions that need several sources.
 - Prefer `octagon-deep-research-agent` for open-ended multi-source research or thematic investigations.
+- Prefer `octagon-podcasts-agent` for what investors, strategists or named people said on podcasts, or which companies podcasts discussed. Earnings calls go to `octagon-agent`.
 - Prefer `octagon-prediction-markets-agent` when a Kalshi URL is present or the user wants a prediction market report.
 - Prefer `prediction_markets_history` for structured event history retrieval.
 
