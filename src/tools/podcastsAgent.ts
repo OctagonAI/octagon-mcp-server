@@ -11,7 +11,7 @@ import {
 
 const AGENT_NAME = "octagon-podcasts-agent";
 const AGENT_DESCRIPTION =
-  "Answers questions from what investors, strategists, operators and guests said on finance and business podcasts (Bloomberg, All-In, Odd Lots, Invest Like the Best, Excess Returns and 70 more shows). Capabilities: synthesizes who thinks what and why, where views agree and disagree, filtered by time window, show, host, guest, company or ticker read from the question; every claim cites the episode (show, title, date, link, deep-linked to the chapter when available). Best for: market views and sentiment from spoken commentary, what a named person said recently, what the latest episodes of a show covered, and which companies podcasts discussed most. Earnings calls are not podcasts: use octagon-agent for those.";
+  "Answers questions from what investors, strategists, operators and guests said on finance and business podcasts (Bloomberg, All-In, Odd Lots, Invest Like the Best, Excess Returns and 100+ more shows; ask it which shows it covers for the live list). Capabilities: synthesizes who thinks what and why, where views agree and disagree, filtered by time window, show, host, guest, company or ticker read from the question; every claim cites the episode (show, title, date, link, deep-linked to the chapter when available). Best for: market views and sentiment from spoken commentary, what a named person said recently, what the latest episodes of a show covered, and which companies podcasts discussed most. Earnings calls are not podcasts: use octagon-agent for those.";
 
 const podcastsInputShape = {
   prompt: z
