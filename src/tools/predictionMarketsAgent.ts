@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import OpenAI from "openai";
+import OpenAI, { APIError } from "openai";
 import { z } from "zod";
 
 import { type SessionExtra } from "../toolSessionState.js";
@@ -11,13 +11,20 @@ import {
 
 const AGENT_NAME = "octagon-prediction-markets-agent";
 const AGENT_DESCRIPTION =
-  "A specialized agent for creating research reports on Kalshi events. See what's driving prices, compare market vs model probabilities, and find potential mispricings.";
+  "A specialized agent for researching prediction markets on Kalshi and Polymarket. Takes a market URL, a Kalshi event ticker, or a Polymarket event slug and returns a cited report: what's driving the price, the market-implied probability against Octagon's model probability, catalysts, resolution history, and the market's Trust Score. Can also find the markets that exist for a topic across both venues and screen them by where the model disagrees with the price. For a specific market, try cache: true first; it is instant and free.";
 
 const predictionMarketsInputShape = {
   prompt: z
     .string()
-    .describe("Your natural language query or request for the agent"),
-  cache: z.boolean().optional().describe("Whether to cache the response"),
+    .describe(
+      "A Kalshi market URL or event ticker, a Polymarket event URL or event slug, or a natural-language question about prediction markets (which markets exist or are open for a topic, where the model disagrees with the price).",
+    ),
+  cache: z
+    .boolean()
+    .optional()
+    .describe(
+      "Report mode for a single market. true: read the cached report only (never generates, free). false: force a fresh report (3 credits; Plus, Pro and Enterprise plans). Omitted: the cached report if one exists, otherwise generate one. Natural-language search questions work in every mode; with cache: true they return a structured JSON list of markets.",
+    ),
 };
 
 export const predictionMarketsInputSchema = z
@@ -50,6 +57,16 @@ export async function executePredictionMarketsTool(
     };
   } catch (error) {
     console.error(`Error calling ${model}:`, error);
+
+    // The Octagon API's error messages are written for the end user (a missing or
+    // unresolved market reference, an ambiguous ticker, a closed market, a plan or
+    // credit limit); forward them the way the history tool does.
+    if (error instanceof APIError && error.code) {
+      const err = error.error as { message?: string } | undefined;
+      return createTextErrorResult(
+        `Error [${error.code}]: ${err?.message ?? error.message}`,
+      );
+    }
     return createTextErrorResult(
       "Error: Failed to process prediction markets query.",
     );
