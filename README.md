@@ -376,20 +376,26 @@ More examples:
 
 ### `octagon-prediction-markets-agent`
 
-Generates research reports for Kalshi prediction market events.
+Research reports on Kalshi and Polymarket prediction markets, plus market search and edge screening across both venues.
 
 **Parameters**
 
-- `prompt` (string, required): natural language research request.
-- `cache` (boolean, optional): controls agent variant routing.
-  - omitted: `prediction-markets-agent`
-  - `false`: `prediction-markets-agent:refresh`
-  - `true`: `prediction-markets-agent:cache`
+- `prompt` (string, required): a Kalshi market URL or event ticker, a Polymarket event URL or slug, or a natural-language question (which markets exist or are open for a topic, where the model disagrees with the price).
+- `cache` (boolean, optional): report mode for a single market.
+  - omitted: `octagon-prediction-markets-agent`, the cached report if one exists, otherwise generate one.
+  - `false`: `octagon-prediction-markets-agent:refresh`, force a fresh report (3 credits; Plus, Pro and Enterprise plans).
+  - `true`: `octagon-prediction-markets-agent:cache`, read the cached report only; never generates; free. A question that names no market returns a structured JSON list of matching markets (`kind: "discovery"`).
 
-Example:
+API errors (a missing or unresolved market reference, an ambiguous ticker, a closed market, a plan or credit limit) are returned as `Error [<code>]: <message>`.
+
+Examples:
 
 ```text
 Generate a report for the Kalshi market https://kalshi.com/markets/kxbtcy/btc-price-range-eoy/kxbtcy-27jan0100
+```
+
+```text
+Which Kalshi NBA game-winner markets are open tonight?   (cache: true)
 ```
 
 ### `prediction_markets_history`
